@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -19,5 +21,6 @@ public abstract class Usuario {
     private String telefone;
 
     @OneToOne
+    @Cascade(CascadeType.ALL)
     private Endereco endereco;
 }
