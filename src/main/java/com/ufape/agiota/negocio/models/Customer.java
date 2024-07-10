@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class Cliente extends Usuario{
-    private String profissao;
-    private String localTrabalho;
-    private String telefoneTrabalho;
+public class Customer extends User{
+    private String occupation;
+    private String workplace;
+    private String workPhone;
 
 }
