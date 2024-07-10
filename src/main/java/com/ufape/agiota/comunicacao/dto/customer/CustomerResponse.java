@@ -1,8 +1,8 @@
-package com.ufape.agiota.comunicacao.dto.clientes;
+package com.ufape.agiota.comunicacao.dto.customer;
 
-import com.ufape.agiota.comunicacao.dto.endereco.EnderecoResponse;
+import com.ufape.agiota.comunicacao.dto.adress.AdressResponse;
 import com.ufape.agiota.config.SpringApplicationContext;
-import com.ufape.agiota.negocio.models.Cliente;
+import com.ufape.agiota.negocio.models.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +10,17 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class ClientesResponse {
+public class CustomerResponse {
     private Long id;
-    private String nome;
+    private String name;
     private String cpf;
-    private String telefone;
-    private EnderecoResponse endereco;
-    private String profissao;
-    private String localTrabalho;
-    private String telefoneTrabalho;
+    private String phone;
+    private AdressResponse adressResponse;
+    private String occupation;
+    private String workplace;
+    private String workPhone;
 
-    public ClientesResponse(Cliente obj){
+    public CustomerResponse(Customer obj){
         if(obj == null) throw new IllegalArgumentException("Objeto não pode ser nulo");
         else{
             ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

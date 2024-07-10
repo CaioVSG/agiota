@@ -11,16 +11,17 @@ import org.hibernate.annotations.CascadeType;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public abstract class Usuario {
+@Table(name = "\"user\"")
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    private String name;
     private String cpf;
-    private String telefone;
+    private String phone;
 
     @OneToOne
     @Cascade(CascadeType.ALL)
-    private Endereco endereco;
+    private Adress adress;
 }

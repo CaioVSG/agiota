@@ -11,16 +11,16 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class Endereco {
+public class Adress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String rua;
-    private String logradouro;
-    private String numero;
-    private String bairro;
-    private String cidade;
-    private String estado;
+    private String road;
+    private String place;
+    private String number;
+    private String neighborhood;
+    private String city;
+    private String state;
     private String cep;
 }
