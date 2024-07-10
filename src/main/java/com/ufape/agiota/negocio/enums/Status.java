@@ -1,2 +1,5 @@
-package com.ufape.agiota.negocio.enums;public enum Status {
+package com.ufape.agiota.negocio.enums;
+
+public enum Status {
+    ANDAMENTO, CONCLUIDO;
 }
