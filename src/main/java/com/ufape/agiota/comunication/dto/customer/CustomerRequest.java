@@ -1,6 +1,6 @@
-package com.ufape.agiota.comunicacao.dto.customer;
+package com.ufape.agiota.comunication.dto.customer;
 
-import com.ufape.agiota.comunicacao.dto.adress.AdressRequest;
+import com.ufape.agiota.comunication.dto.adress.AdressRequest;
 import com.ufape.agiota.config.SpringApplicationContext;
 import com.ufape.agiota.negocio.models.Adress;
 import com.ufape.agiota.negocio.models.Customer;
