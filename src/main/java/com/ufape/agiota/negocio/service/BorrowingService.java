@@ -33,7 +33,7 @@ public class BorrowingService implements BorrowingServiceInterface{
     public Borrowing accept(Long id) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
 
-        borrowing.setStatus(Status.ANDAMENTO);
+        borrowing.aceitar();
         return  repositoryBorrowing.save(borrowing);
     }
 }
