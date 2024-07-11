@@ -3,7 +3,7 @@ package com.ufape.agiota.negocio.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ufape.agiota.dados.repository.AgiotaRepository;
+import com.ufape.agiota.dados.repository.RepositoryAgiota;
 import com.ufape.agiota.negocio.models.Agiota;
 import java.util.List;
 
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
 public class AgiotaService implements AgiotaServiceInterface{
-    final private AgiotaRepository agiotaRepository;
+    final private RepositoryAgiota agiotaRepository;
 
     @Override
     public void delete(Long id) {
