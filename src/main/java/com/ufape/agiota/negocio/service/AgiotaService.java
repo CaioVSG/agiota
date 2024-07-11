@@ -3,6 +3,7 @@ package com.ufape.agiota.negocio.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ufape.agiota.comunication.dto.agiota.AgiotaRequest;
 import com.ufape.agiota.dados.repository.AgiotaRepository;
 import com.ufape.agiota.negocio.models.Agiota;
 import java.util.List;
@@ -32,6 +33,12 @@ public class AgiotaService implements AgiotaServiceInterface{
     @Override
     public List<Agiota> findAll() {
         return agiotaRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public Agiota update(Long id, Agiota agiota) {
+        return agiotaRepository.save(agiota);
     }
 
     

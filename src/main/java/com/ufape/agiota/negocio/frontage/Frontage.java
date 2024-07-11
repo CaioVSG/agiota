@@ -54,6 +54,10 @@ public class Frontage {
         return agiotaService.findAll();
     }
 
+    public Agiota updateAgiota(Long id, Agiota agiota) {
+        return agiotaService.update(id, agiota);
+    }
+
     // =================== Borrowing =================== //
 
     public Borrowing saveBorrowing(Borrowing borrowing) { return borrowingService.save(borrowing); }

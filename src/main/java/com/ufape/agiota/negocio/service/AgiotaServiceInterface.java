@@ -11,5 +11,7 @@ public interface AgiotaServiceInterface {
     Agiota find(Long id);
 
     List<Agiota> findAll();
+
+    Agiota update(Long id, Agiota agiota);
     
 }
