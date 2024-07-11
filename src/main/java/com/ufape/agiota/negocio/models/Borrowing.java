@@ -11,8 +11,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Entity
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
@@ -20,16 +20,17 @@ public class Borrowing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double fees;
+    private double fees;
     private BigDecimal value;
-    private Integer numberInstallments;
-    private Date initialDate;
-    private Date payday;
+    private int numberInstallments;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar initialDate;
+    private int payday;
     @Enumerated (EnumType.STRING)
     private Frequency frequency;
     @Enumerated (EnumType.STRING)
     private Status status;
-    private Double discount;
+    private double discount;
 
     @ManyToOne
     private Customer customer;
@@ -37,4 +38,25 @@ public class Borrowing {
     @OneToMany
     @Cascade(CascadeType.ALL)
     private List<Installments> installmentsList;
+
+
+    private List<Installments> gerarParcelas(){
+        double jurusDia = fees/30;
+        BigDecimal valorParcela = this.value.divide(new BigDecimal(frequency.valor), RoundingMode.UP);
+        List<Installments> parcelas = new ArrayList<>();
+        Calendar dataPagamento = (GregorianCalendar) initialDate.clone();
+
+        for(int i=1; i <= numberInstallments; i++){
+            Installments parcela = new Installments();
+            parcela.setStatus(false);
+            dataPagamento.add(Calendar.DATE,frequency.valor);
+            parcela.setPaymentDate(dataPagamento);
+            valorParcela = valorParcela.multiply(new BigDecimal(jurusDia*frequency.valor));
+            parcela.setValue(valorParcela);
+            parcelas.add(parcela);
+
+        }
+        return parcelas;
+
+    }
 }
