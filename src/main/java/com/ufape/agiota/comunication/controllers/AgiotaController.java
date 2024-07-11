@@ -1,4 +1,4 @@
-package com.ufape.agiota.comunicacao.controllers;
+package com.ufape.agiota.comunication.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufape.agiota.comunicacao.dto.agiota.AgiotaRequest;
-import com.ufape.agiota.comunicacao.dto.agiota.AgiotaResponse;
+import com.ufape.agiota.comunication.dto.agiota.AgiotaRequest;
+import com.ufape.agiota.comunication.dto.agiota.AgiotaResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
 
 import jakarta.validation.Valid;
