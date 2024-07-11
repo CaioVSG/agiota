@@ -3,6 +3,8 @@ package com.ufape.agiota.comunication.controllers;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
+import com.ufape.agiota.negocio.models.Agiota;
+import com.ufape.agiota.negocio.models.Customer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,8 +19,11 @@ public class BorrowingController {
     final private Frontage frontage;
 
     @PostMapping
-    public ResponseEntity<BorrowingResponse> saveBorrowing(@Valid @RequestBody BorrowingRequest cliente){
-        BorrowingResponse response = new BorrowingResponse(frontage.saveBorrowing(cliente.convertToEntity()));
+    public ResponseEntity<BorrowingResponse> saveBorrowing(@Valid @RequestBody BorrowingRequest borrowing){
+        Customer customer = frontage.findCustomer(borrowing.getCustomerId());
+        Agiota agiota = frontage.findAgiota(borrowing.getAgiotaId());
+
+        BorrowingResponse response = new BorrowingResponse(frontage.saveBorrowing(borrowing.convertToEntity(customer, agiota)));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -26,5 +31,15 @@ public class BorrowingController {
     public ResponseEntity<BorrowingResponse> findBorrowing(@PathVariable Long id){
         BorrowingResponse response = new BorrowingResponse(frontage.findBorrowing(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/denied")
+    public ResponseEntity<BorrowingResponse> deniedBorrowing(@PathVariable Long id){
+        return new ResponseEntity<>(new BorrowingResponse(frontage.deniedBorrowing(id)), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<BorrowingResponse> acceptBorrowing(@PathVariable Long id){
+        return new ResponseEntity<>(new BorrowingResponse(frontage.deniedBorrowing(id)), HttpStatus.OK);
     }
 }

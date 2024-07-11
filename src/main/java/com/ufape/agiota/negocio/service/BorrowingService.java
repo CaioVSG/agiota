@@ -1,6 +1,7 @@
 package com.ufape.agiota.negocio.service;
 
 import com.ufape.agiota.dados.repository.RepositoryBorrowing;
+import com.ufape.agiota.negocio.enums.Status;
 import com.ufape.agiota.negocio.models.Borrowing;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Transactional
     @Override
-    public Borrowing save(Borrowing customer) { return repositoryBorrowing.save(customer); }
+    public Borrowing save(Borrowing borrowing) { return repositoryBorrowing.save(borrowing); }
 
     @Override
     public void delete(Long id) { repositoryBorrowing.deleteById(id); }
@@ -20,4 +21,19 @@ public class BorrowingService implements BorrowingServiceInterface{
     @Override
     public Borrowing find(Long id) { return repositoryBorrowing.findById(id).orElse(null); }
 
+    @Override
+    public Borrowing denied(Long id) {
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+
+        borrowing.setStatus(Status.RECUSADO);
+        return  repositoryBorrowing.save(borrowing);
+    }
+
+    @Override
+    public Borrowing accept(Long id) {
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+
+        borrowing.setStatus(Status.ANDAMENTO);
+        return  repositoryBorrowing.save(borrowing);
+    }
 }

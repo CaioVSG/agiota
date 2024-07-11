@@ -1,7 +1,10 @@
 package com.ufape.agiota.comunication.dto.borrowing;
 
 import com.ufape.agiota.config.SpringApplicationContext;
+import com.ufape.agiota.negocio.enums.Status;
+import com.ufape.agiota.negocio.models.Agiota;
 import com.ufape.agiota.negocio.models.Borrowing;
+import com.ufape.agiota.negocio.models.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +22,15 @@ public class BorrowingRequest {
     private Date initialDate;
     private Date payday;
     private Double discount;
-    private Long userId;
+    private Long customerId;
+    private Long agiotaId;
 
-    public Borrowing convertToEntity() {
+    public Borrowing convertToEntity(Customer customer, Agiota agiota) {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         Borrowing obj = modelMapper.map(this, Borrowing.class);
+        obj.setCustomer(customer);
+        obj.setAgiota(agiota);
+        obj.setStatus(Status.SOLICITADO);
         return obj;
     }
 
