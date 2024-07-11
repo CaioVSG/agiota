@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Borrowing {
+    //loan
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,8 +34,12 @@ public class Borrowing {
 
     @ManyToOne
     private Customer customer;
-    // add uma variavel p agiota
+    @ManyToOne
+    private Agiota agiota;
+
     @OneToMany
     @Cascade(CascadeType.ALL)
     private List<Installments> installmentsList;
+
+
 }

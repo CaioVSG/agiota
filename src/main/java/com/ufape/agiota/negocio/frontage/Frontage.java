@@ -59,4 +59,8 @@ public class Frontage {
     public Borrowing saveBorrowing(Borrowing borrowing) { return borrowingService.save(borrowing); }
 
     public Borrowing findBorrowing(Long id) { return borrowingService.find(id); }
+
+    public Borrowing deniedBorrowing(Long id) { return borrowingService.find(id); }
+
+    public Borrowing acceptBorrowing(Long id) { return borrowingService.find(id); }
 }

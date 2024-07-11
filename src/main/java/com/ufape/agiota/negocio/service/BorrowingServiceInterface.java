@@ -6,9 +6,13 @@ import com.ufape.agiota.negocio.models.Customer;
 import java.util.List;
 
 public interface BorrowingServiceInterface {
-    Borrowing save(Borrowing customer);
+    Borrowing save(Borrowing borrowing);
 
     void delete(Long id);
 
     Borrowing find(Long id);
+
+    Borrowing denied(Long id);
+
+    Borrowing accept(Long id);
 }
