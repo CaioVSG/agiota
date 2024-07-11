@@ -2,6 +2,7 @@ package com.ufape.agiota.negocio.service;
 
 import com.ufape.agiota.negocio.models.Borrowing;
 import com.ufape.agiota.negocio.models.Customer;
+import com.ufape.agiota.negocio.models.Payment;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface BorrowingServiceInterface {
     Borrowing denied(Long id);
 
     Borrowing accept(Long id);
+
+    Payment pay(Long id, Long installid);
 }

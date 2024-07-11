@@ -2,6 +2,7 @@ package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
+import com.ufape.agiota.comunication.dto.payment.PaymentResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
 import com.ufape.agiota.negocio.models.Agiota;
 import com.ufape.agiota.negocio.models.Customer;
@@ -40,6 +41,11 @@ public class BorrowingController {
 
     @PostMapping("/{id}/accept")
     public ResponseEntity<BorrowingResponse> acceptBorrowing(@PathVariable Long id){
-        return new ResponseEntity<>(new BorrowingResponse(frontage.deniedBorrowing(id)), HttpStatus.OK);
+        return new ResponseEntity<>(new BorrowingResponse(frontage.acceptBorrowing(id)), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/installments/{installid}/pay")
+    public ResponseEntity<PaymentResponse> payBorrowing(@PathVariable Long id, @PathVariable Long installid){
+        return new ResponseEntity<>(new PaymentResponse(frontage.payBorrowing(id, installid)), HttpStatus.OK);
     }
 }
