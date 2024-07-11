@@ -1,7 +1,7 @@
-package com.ufape.agiota.comunicacao.controllers;
+package com.ufape.agiota.comunication.controllers;
 
-import com.ufape.agiota.comunicacao.dto.customer.CustomerRequest;
-import com.ufape.agiota.comunicacao.dto.customer.CustomerResponse;
+import com.ufape.agiota.comunication.dto.customer.CustomerRequest;
+import com.ufape.agiota.comunication.dto.customer.CustomerResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +17,19 @@ public class CustomerController {
     final private Frontage frontage;
 
     @PostMapping
-    public ResponseEntity<CustomerResponse> cadastrarCliente(@Valid @RequestBody CustomerRequest cliente){
-       CustomerResponse response = new CustomerResponse(frontage.saveCustomer(cliente.convertToEntity()));
+    public ResponseEntity<CustomerResponse> saveCustomer(@Valid @RequestBody CustomerRequest customer){
+       CustomerResponse response = new CustomerResponse(frontage.saveCustomer(customer.convertToEntity()));
        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> buscarCliente(@PathVariable Long id){
+    public ResponseEntity<CustomerResponse> findCustomer(@PathVariable Long id){
         CustomerResponse response = new CustomerResponse(frontage.findCustomer(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<CustomerResponse>> buscarTodosClientes(){
+    public ResponseEntity<Iterable<CustomerResponse>> findAllCustomers(){
         Iterable<CustomerResponse> response = frontage.findAllCustomers().stream().map(CustomerResponse::new).toList();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

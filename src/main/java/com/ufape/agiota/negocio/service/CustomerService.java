@@ -1,6 +1,6 @@
 package com.ufape.agiota.negocio.service;
 
-import com.ufape.agiota.dados.repository.ReposioryCostumer;
+import com.ufape.agiota.dados.repository.RepositoryCostumer;
 import com.ufape.agiota.negocio.models.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,26 +10,24 @@ import java.util.List;
 
 @Service @RequiredArgsConstructor
 public class CustomerService implements CustomerServiceInterface {
-    final private ReposioryCostumer reposioryCostumer;
+    final private RepositoryCostumer repositoryCostumer;
 
     @Transactional
     @Override
-    public Customer save(Customer customer) {
-        return reposioryCostumer.save(customer);
-    }
+    public Customer save(Customer customer) { return repositoryCostumer.save(customer); }
 
     @Override
     public void delete(Long id) {
-        reposioryCostumer.deleteById(id);
+        repositoryCostumer.deleteById(id);
     }
 
     @Override
     public Customer find(Long id) {
-        return reposioryCostumer.findById(id).orElse(null);
+        return repositoryCostumer.findById(id).orElse(null);
     }
 
     @Override
     public List<Customer> findAll() {
-        return reposioryCostumer.findAll();
+        return repositoryCostumer.findAll();
     }
 }

@@ -1,4 +1,4 @@
-package com.ufape.agiota.comunicacao.dto.adress;
+package com.ufape.agiota.comunication.dto.adress;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

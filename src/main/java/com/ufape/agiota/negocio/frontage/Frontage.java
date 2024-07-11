@@ -1,8 +1,12 @@
 package com.ufape.agiota.negocio.frontage;
 
+
 import com.ufape.agiota.negocio.models.Agiota;
 import com.ufape.agiota.negocio.models.Customer;
 import com.ufape.agiota.negocio.service.AgiotaServiceInterface;
+import com.ufape.agiota.negocio.models.Borrowing;
+import com.ufape.agiota.negocio.models.Customer;
+import com.ufape.agiota.negocio.service.BorrowingServiceInterface;
 import com.ufape.agiota.negocio.service.CustomerServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,12 +18,11 @@ import java.util.List;
 public class Frontage {
     final private CustomerServiceInterface clienteService;
     final private AgiotaServiceInterface agiotaService;
+    final private BorrowingServiceInterface borrowingService;
 
     // ================== Customer ================== //
 
-    public Customer saveCustomer(Customer customer) {
-       return clienteService.save(customer);
-    }
+    public Customer saveCustomer(Customer customer) { return clienteService.save(customer); }
 
     public void deleteCustomer(Long id) {
         clienteService.delete(id);
@@ -51,4 +54,9 @@ public class Frontage {
         return agiotaService.findAll();
     }
 
+    // =================== Borrowing =================== //
+
+    public Borrowing saveBorrowing(Borrowing borrowing) { return borrowingService.save(borrowing); }
+
+    public Borrowing findBorrowing(Long id) { return borrowingService.find(id); }
 }
