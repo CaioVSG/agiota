@@ -1,8 +1,8 @@
-package com.ufape.agiota.comunicacao.dto.agiota;
+package com.ufape.agiota.comunication.dto.agiota;
 
 import org.modelmapper.ModelMapper;
 
-import com.ufape.agiota.comunicacao.dto.adress.AdressResponse;
+import com.ufape.agiota.comunication.dto.adress.AdressResponse;
 import com.ufape.agiota.config.SpringApplicationContext;
 import com.ufape.agiota.negocio.models.Agiota;
 
