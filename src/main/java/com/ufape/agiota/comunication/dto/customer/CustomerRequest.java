@@ -15,7 +15,7 @@ public class CustomerRequest {
     private String name;
     private String cpf;
     private String phone;
-    private AdressRequest adressRequest;
+    private AdressRequest adress;
     private String occupation;
     private String workplace;
     private String workPhone;
@@ -23,7 +23,7 @@ public class CustomerRequest {
     public Customer convertToEntity() {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         Customer obj = modelMapper.map(this, Customer.class);
-        obj.setAdress(modelMapper.map(this.adressRequest, Adress.class));
+        obj.setAdress(modelMapper.map(this.adress, Adress.class));
         return obj;
     }
 }

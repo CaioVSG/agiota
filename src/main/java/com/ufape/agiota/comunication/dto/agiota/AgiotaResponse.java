@@ -1,8 +1,8 @@
-package com.ufape.agiota.comunication.dto.agiota;
+package com.ufape.agiota.comunicacao.dto.agiota;
 
-import com.ufape.agiota.comunication.dto.adress.AdressResponse;
 import org.modelmapper.ModelMapper;
 
+import com.ufape.agiota.comunicacao.dto.adress.AdressResponse;
 import com.ufape.agiota.config.SpringApplicationContext;
 import com.ufape.agiota.negocio.models.Agiota;
 
@@ -17,7 +17,7 @@ public class AgiotaResponse {
     private String name;
     private String cpf;
     private String phone;
-    private AdressResponse adress;
+    private  AdressResponse adress;
     private double fees;
     private String billingMethod;
 
