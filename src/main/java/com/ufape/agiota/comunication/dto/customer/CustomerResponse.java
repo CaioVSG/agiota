@@ -15,7 +15,7 @@ public class CustomerResponse {
     private String name;
     private String cpf;
     private String phone;
-    private AdressResponse adressResponse;
+    private AdressResponse adress;
     private String occupation;
     private String workplace;
     private String workPhone;

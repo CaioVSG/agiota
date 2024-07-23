@@ -1,10 +1,8 @@
 package com.ufape.agiota.negocio.frontage;
 
 
-import com.ufape.agiota.negocio.models.Agiota;
-import com.ufape.agiota.negocio.models.Customer;
+import com.ufape.agiota.negocio.models.*;
 import com.ufape.agiota.negocio.service.AgiotaServiceInterface;
-import com.ufape.agiota.negocio.models.Borrowing;
 import com.ufape.agiota.negocio.models.Customer;
 import com.ufape.agiota.negocio.service.BorrowingServiceInterface;
 import com.ufape.agiota.negocio.service.CustomerServiceInterface;
@@ -71,4 +69,7 @@ public class Frontage {
     public Borrowing evaluateCustomerBorrowing(Long id, int nota) {return borrowingService.evaluateCustomerBorrowing(id,nota);}
 
     public Borrowing evaluateAgiotaBorrowing(Long id, int nota) { return borrowingService.evaluateAgiotaBorrowing(id,nota);}
+
+    public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
+
 }
