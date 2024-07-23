@@ -1,5 +1,6 @@
 package com.ufape.agiota.negocio.models;
 
+import com.ufape.agiota.negocio.enums.Avaliado;
 import com.ufape.agiota.negocio.enums.Frequency;
 import com.ufape.agiota.negocio.enums.Status;
 import jakarta.persistence.*;
@@ -12,7 +13,6 @@ import org.hibernate.annotations.CascadeType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity
@@ -42,6 +42,11 @@ public class Borrowing {
     @OneToMany
     @Cascade(CascadeType.ALL)
     private List<Installments> installmentsList;
+
+    @OneToMany
+    @Cascade(CascadeType.ALL)
+    private  List<Avaliacao> listaAvaliacoes;
+
 
     public Borrowing(BigDecimal value, int numberInstallments, int payday, Frequency frequency, Customer customer, Agiota agiota) {
 
@@ -96,6 +101,38 @@ public class Borrowing {
 
         }
         return parcelas;
+
+    }
+
+    public void avaliarCliente(int nota){
+        Avaliacao avaliacao = null;
+        for(Avaliacao temp: listaAvaliacoes){
+            if (temp.getAvaliado() == Avaliado.CLIENTE){
+                avaliacao = temp;
+            }
+        }
+        if (avaliacao == null){
+            avaliacao = new Avaliacao();
+            avaliacao.setAvaliado(Avaliado.CLIENTE);
+        }else{
+            throw new AvaliacaoDuplicadaException("O cliente já contem uma avaliação.");
+        }
+
+    }
+
+    public void avaliarAgiota(int nota){
+        Avaliacao avaliacao = null;
+        for(Avaliacao temp: listaAvaliacoes){
+            if (temp.getAvaliado() == Avaliado.AGIATA){
+                avaliacao = temp;
+            }
+        }
+        if (avaliacao == null){
+            avaliacao = new Avaliacao();
+            avaliacao.setAvaliado(Avaliado.AGIATA);
+        }else{
+            throw new AvaliacaoDuplicadaException("O agiota já contem uma avaliação.");
+        }
 
     }
 }

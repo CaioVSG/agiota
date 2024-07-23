@@ -15,4 +15,8 @@ public interface BorrowingServiceInterface {
     Borrowing denied(Long id);
 
     Borrowing accept(Long id);
+
+    Borrowing evaluateCustomerBorrowing(Long id, int nota);
+
+    Borrowing evaluateAgiotaBorrowing(Long id, int nota);
 }

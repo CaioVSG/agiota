@@ -17,7 +17,7 @@ public class AgiotaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AgiotaApplication.class, args);
-		
+
 	}
 
 }

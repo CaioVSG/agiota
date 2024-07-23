@@ -42,4 +42,14 @@ public class BorrowingController {
     public ResponseEntity<BorrowingResponse> acceptBorrowing(@PathVariable Long id){
         return new ResponseEntity<>(new BorrowingResponse(frontage.deniedBorrowing(id)), HttpStatus.OK);
     }
+
+    @PostMapping("/evaluateCustomer/{id}/{nota}")
+    public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @PathVariable int nota){
+        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateCustomerBorrowing(id,nota)),HttpStatus.OK);
+    }
+
+    @PostMapping("/evaluateAgiota/{id}/{nota}")
+    public ResponseEntity<BorrowingResponse> evaluateAgiotaBorrowing(@PathVariable Long id, @PathVariable int nota){
+        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateAgiotaBorrowing(id,nota)),HttpStatus.OK);
+    }
 }

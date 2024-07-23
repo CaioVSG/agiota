@@ -36,4 +36,20 @@ public class BorrowingService implements BorrowingServiceInterface{
         borrowing.aceitar();
         return  repositoryBorrowing.save(borrowing);
     }
+
+    @Override
+    public Borrowing evaluateCustomerBorrowing(Long id, int nota) {
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        borrowing.avaliarCliente(nota);
+        return borrowing;
+    }
+
+    @Override
+    public Borrowing evaluateAgiotaBorrowing(Long id, int nota) {
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        borrowing.avaliarAgiota(nota);
+        return repositoryBorrowing.save(borrowing);
+    }
+
+
 }
