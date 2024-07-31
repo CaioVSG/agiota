@@ -2,14 +2,17 @@ package com.ufape.agiota.negocio.service;
 
 import com.ufape.agiota.dados.repository.RepositoryBorrowing;
 import com.ufape.agiota.dados.repository.RepositoryPayment;
+import com.ufape.agiota.negocio.enums.Avaliado;
+import com.ufape.agiota.negocio.enums.Frequency;
 import com.ufape.agiota.negocio.enums.Status;
-import com.ufape.agiota.negocio.models.Borrowing;
-import com.ufape.agiota.negocio.models.Payment;
+import com.ufape.agiota.negocio.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Service @RequiredArgsConstructor
 public class BorrowingService implements BorrowingServiceInterface{
@@ -37,22 +40,47 @@ public class BorrowingService implements BorrowingServiceInterface{
     @Override
     public Borrowing accept(Long id) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
-
-        borrowing.aceitar();
+        borrowing.setInitialDate(new GregorianCalendar());
+        borrowing.setStatus(Status.ANDAMENTO);
+        borrowing.setDiscount(0.0);
+        borrowing.setInstallmentsList(gerarParcelas(borrowing));
         return  repositoryBorrowing.save(borrowing);
     }
 
     @Override
     public Borrowing evaluateCustomerBorrowing(Long id, int nota) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
-        borrowing.avaliarCliente(nota);
-        return borrowing;
+        Avaliacao avaliacao = null;
+        for(Avaliacao temp: borrowing.getListaAvaliacoes()){
+            if (temp.getAvaliado() == Avaliado.CLIENTE){
+                avaliacao = temp;
+            }
+        }
+        if (avaliacao == null){
+            avaliacao = new Avaliacao();
+            avaliacao.setAvaliado(Avaliado.CLIENTE);
+        }else{
+            throw new AvaliacaoDuplicadaException("O cliente já contem uma avaliação.");
+        }
+
+        return repositoryBorrowing.save(borrowing);
     }
 
     @Override
     public Borrowing evaluateAgiotaBorrowing(Long id, int nota) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
-        borrowing.avaliarAgiota(nota);
+        Avaliacao avaliacao = null;
+        for(Avaliacao temp: borrowing.getListaAvaliacoes()){
+            if (temp.getAvaliado() == Avaliado.AGIATA){
+                avaliacao = temp;
+            }
+        }
+        if (avaliacao == null){
+            avaliacao = new Avaliacao();
+            avaliacao.setAvaliado(Avaliado.AGIATA);
+        }else{
+            throw new AvaliacaoDuplicadaException("O agiota já contem uma avaliação.");
+        }
         return repositoryBorrowing.save(borrowing);
     }
 
@@ -72,5 +100,41 @@ public class BorrowingService implements BorrowingServiceInterface{
         }
 
         return  repositoryPayment.save(payment);
+    }
+
+    private List<Installments> gerarParcelas(Borrowing borrowing){
+
+        double jurusDia = borrowing.getFees()/100/30;
+        BigDecimal valorParcela = borrowing.getValue().divide(new BigDecimal(borrowing.getNumberInstallments()), RoundingMode.UP);
+        List<Installments> parcelas = new ArrayList<>();
+        Calendar dataPagamento = (GregorianCalendar) borrowing.getInitialDate().clone();
+        dataPagamento.set(Calendar.DAY_OF_MONTH, borrowing.getPayday());
+        long hoje = new Date().getTime();
+        for(int i=1; i <= borrowing.getNumberInstallments(); i++){
+            Installments parcela = new Installments();
+            parcela.setStatus(false);
+            GregorianCalendar temp = (GregorianCalendar) dataPagamento.clone();
+            if(borrowing.getFrequency() == Frequency.MENSAL){
+                temp.add(Calendar.MONTH, i);
+                parcela.setPaymentDate(temp);
+            }else if(borrowing.getFrequency() == Frequency.QUINZENAL){
+                temp.add(Calendar.DATE, 15*i);
+                parcela.setPaymentDate(temp);
+            }else{
+                temp.add(Calendar.WEEK_OF_YEAR, i);
+                parcela.setPaymentDate(temp);
+            }
+
+            long proximoPagament = parcela.getPaymentDate().getTimeInMillis();
+            long l = proximoPagament - hoje;
+            hoje = proximoPagament;
+            int dias = Math.round(l /86400000f);
+            valorParcela = valorParcela.multiply(new BigDecimal(1.0+jurusDia*dias));
+            parcela.setValue(valorParcela);
+            parcelas.add(parcela);
+
+        }
+        return parcelas;
+
     }
 }
