@@ -31,7 +31,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Override
     public Borrowing denied(Long id) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
 
         borrowing.setStatus(Status.RECUSADO);
         return  repositoryBorrowing.save(borrowing);
@@ -39,7 +39,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Override
     public Borrowing accept(Long id) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         borrowing.setInitialDate(new GregorianCalendar());
         borrowing.setStatus(Status.ANDAMENTO);
         borrowing.setDiscount(0.0);
@@ -49,7 +49,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Override
     public Borrowing evaluateCustomerBorrowing(Long id, int nota) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Avaliacao avaliacao = null;
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
@@ -68,7 +68,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Override
     public Borrowing evaluateAgiotaBorrowing(Long id, int nota) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Avaliacao avaliacao = null;
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.AGIATA){
@@ -84,9 +84,15 @@ public class BorrowingService implements BorrowingServiceInterface{
         return repositoryBorrowing.save(borrowing);
     }
 
+    @Override
+    public List<Installments> listInstallments(Long id){
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        return borrowing.getInstallmentsList();
+    }
+
 
     public Payment pay(Long id, Long installid) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElse(null);
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Payment payment = new Payment();
         for (int i = 0; i < borrowing.getInstallmentsList().size(); i++) {
             if (Objects.equals(borrowing.getInstallmentsList().get(i).getId(), installid)) {
@@ -101,6 +107,8 @@ public class BorrowingService implements BorrowingServiceInterface{
 
         return  repositoryPayment.save(payment);
     }
+
+
 
     private List<Installments> gerarParcelas(Borrowing borrowing){
 

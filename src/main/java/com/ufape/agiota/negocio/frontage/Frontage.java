@@ -72,4 +72,6 @@ public class Frontage {
 
     public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
 
+    public List<Installments> listInstallments(Long id) { return borrowingService.listInstallments(id); }
+
 }

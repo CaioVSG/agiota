@@ -2,6 +2,7 @@ package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
+import com.ufape.agiota.comunication.dto.installment.InstallmentResponse;
 import com.ufape.agiota.comunication.dto.payment.PaymentResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
 import com.ufape.agiota.negocio.models.Agiota;
@@ -12,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/borrowing") @RequiredArgsConstructor
@@ -47,6 +50,12 @@ public class BorrowingController {
     @PostMapping("/{id}/installments/{installid}/pay")
     public ResponseEntity<PaymentResponse> payBorrowing(@PathVariable Long id, @PathVariable Long installid){
         return new ResponseEntity<>(new PaymentResponse(frontage.payBorrowing(id, installid)), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/installments")
+    public ResponseEntity<List<InstallmentResponse>> listInstallments(@PathVariable Long id){
+        List<InstallmentResponse> response = frontage.listInstallments(id).stream().map(InstallmentResponse::new).toList();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/evaluateCustomer/{id}/{nota}")
