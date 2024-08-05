@@ -47,10 +47,14 @@ public class BorrowingService implements BorrowingServiceInterface{
         return  repositoryBorrowing.save(borrowing);
     }
 
+
+
+    //Em ambos métodos o objeto Avaliação não é salvo no banco de dados, logo, a avaliação não é persistida.
     @Override
     public Borrowing evaluateCustomerBorrowing(Long id, int nota) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Avaliacao avaliacao = null;
+
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
                 avaliacao = temp;
@@ -89,6 +93,7 @@ public class BorrowingService implements BorrowingServiceInterface{
         Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         return borrowing.getInstallmentsList();
     }
+
 
 
     public Payment pay(Long id, Long installid) {

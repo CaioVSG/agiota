@@ -58,6 +58,8 @@ public class BorrowingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+    //Utilizar um body para passar a nota invés de um path
     @PostMapping("/evaluateCustomer/{id}/{nota}")
     public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @PathVariable int nota){
         return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateCustomerBorrowing(id,nota)),HttpStatus.OK);
