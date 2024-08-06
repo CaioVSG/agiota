@@ -1,5 +1,6 @@
 package com.ufape.agiota.comunication.controllers;
 
+import com.ufape.agiota.comunication.dto.Avaliacao.AvaliacaoRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
 import com.ufape.agiota.comunication.dto.installment.InstallmentResponse;
@@ -59,14 +60,14 @@ public class BorrowingController {
     }
 
 
-    //Utilizar um body para passar a nota invés de um path
-    @PostMapping("/evaluateCustomer/{id}/{nota}")
-    public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @PathVariable int nota){
-        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateCustomerBorrowing(id,nota)),HttpStatus.OK);
+
+    @PostMapping("/evaluateCustomer/{id}")
+    public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
+        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateCustomerBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);
     }
 
-    @PostMapping("/evaluateAgiota/{id}/{nota}")
-    public ResponseEntity<BorrowingResponse> evaluateAgiotaBorrowing(@PathVariable Long id, @PathVariable int nota){
-        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateAgiotaBorrowing(id,nota)),HttpStatus.OK);
+    @PostMapping("/evaluateAgiota/{id}")
+    public ResponseEntity<BorrowingResponse> evaluateAgiotaBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
+        return new ResponseEntity<>( new BorrowingResponse(frontage.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);
     }
 }

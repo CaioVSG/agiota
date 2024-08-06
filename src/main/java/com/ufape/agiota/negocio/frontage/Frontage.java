@@ -66,9 +66,9 @@ public class Frontage {
 
     public Borrowing acceptBorrowing(Long id) { return borrowingService.find(id); }
 
-    public Borrowing evaluateCustomerBorrowing(Long id, int nota) {return borrowingService.evaluateCustomerBorrowing(id,nota);}
+    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {return borrowingService.evaluateCustomerBorrowing(id,avaliacao);}
 
-    public Borrowing evaluateAgiotaBorrowing(Long id, int nota) { return borrowingService.evaluateAgiotaBorrowing(id,nota);}
+    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao) { return borrowingService.evaluateAgiotaBorrowing(id,avaliacao);}
 
     public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
 

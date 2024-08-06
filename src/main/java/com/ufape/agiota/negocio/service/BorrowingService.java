@@ -49,42 +49,30 @@ public class BorrowingService implements BorrowingServiceInterface{
 
 
 
-    //Em ambos métodos o objeto Avaliação não é salvo no banco de dados, logo, a avaliação não é persistida.
+
     @Override
-    public Borrowing evaluateCustomerBorrowing(Long id, int nota) {
+    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
-        Avaliacao avaliacao = null;
 
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
-                avaliacao = temp;
+                throw new AvaliacaoDuplicadaException("O cliente já contem uma avaliação.");
             }
         }
-        if (avaliacao == null){
-            avaliacao = new Avaliacao();
-            avaliacao.setAvaliado(Avaliado.CLIENTE);
-        }else{
-            throw new AvaliacaoDuplicadaException("O cliente já contem uma avaliação.");
-        }
-
+        borrowing.getListaAvaliacoes().add(avaliacao);
         return repositoryBorrowing.save(borrowing);
     }
 
     @Override
-    public Borrowing evaluateAgiotaBorrowing(Long id, int nota) {
+    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao) {
         Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
-        Avaliacao avaliacao = null;
+
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
-            if (temp.getAvaliado() == Avaliado.AGIATA){
-                avaliacao = temp;
+            if (temp.getAvaliado() == Avaliado.CLIENTE){
+                throw new AvaliacaoDuplicadaException("O agiot já contem uma avaliação.");
             }
         }
-        if (avaliacao == null){
-            avaliacao = new Avaliacao();
-            avaliacao.setAvaliado(Avaliado.AGIATA);
-        }else{
-            throw new AvaliacaoDuplicadaException("O agiota já contem uma avaliação.");
-        }
+        borrowing.getListaAvaliacoes().add(avaliacao);
         return repositoryBorrowing.save(borrowing);
     }
 
