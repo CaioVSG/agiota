@@ -1,12 +1,11 @@
 package com.ufape.agiota.comunication.controllers;
 
+
+import com.ufape.agiota.negocio.models.Agiota;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ufape.agiota.comunication.dto.agiota.AgiotaRequest;
 import com.ufape.agiota.comunication.dto.agiota.AgiotaResponse;
@@ -14,10 +13,6 @@ import com.ufape.agiota.negocio.frontage.Frontage;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -32,9 +27,11 @@ public class AgiotaController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/agiota/{id}")
-    public ResponseEntity<AgiotaResponse> updateAgiota(@PathVariable Long id, @Valid @RequestBody AgiotaRequest agiota){
-        AgiotaResponse response = new AgiotaResponse(frontage.updateAgiota(id, agiota.convertToEntity()));
+    @PatchMapping("/agiota/{id}")
+    public ResponseEntity<AgiotaResponse> updateAgiota(@PathVariable Long id, @Valid @RequestBody AgiotaRequest entity){
+        Agiota agiota = frontage.findAgiota(id);
+        modelMapper.map(entity, agiota);
+        AgiotaResponse response = new AgiotaResponse(frontage.saveAgiota(agiota));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
