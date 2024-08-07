@@ -1,4 +1,4 @@
-package com.ufape.agiota.negocio.frontage;
+package com.ufape.agiota.negocio.facade;
 
 
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class Frontage {
+public class Facade {
     final private CustomerServiceInterface clienteService;
     final private AgiotaServiceInterface agiotaService;
     final private BorrowingServiceInterface borrowingService;
