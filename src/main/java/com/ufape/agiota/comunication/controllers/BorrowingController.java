@@ -1,13 +1,13 @@
 package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.Avaliacao.AvaliacaoRequest;
+import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingRequest;
+import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
 import com.ufape.agiota.comunication.dto.installment.InstallmentResponse;
 import com.ufape.agiota.comunication.dto.payment.PaymentResponse;
 import com.ufape.agiota.negocio.frontage.Frontage;
-import com.ufape.agiota.negocio.models.Agiota;
-import com.ufape.agiota.negocio.models.Customer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,11 +24,8 @@ public class BorrowingController {
     final private Frontage frontage;
 
     @PostMapping
-    public ResponseEntity<BorrowingResponse> saveBorrowing(@Valid @RequestBody BorrowingRequest borrowing){
-        Customer customer = frontage.findCustomer(borrowing.getCustomerId());
-        Agiota agiota = frontage.findAgiota(borrowing.getAgiotaId());
-
-        BorrowingResponse response = new BorrowingResponse(frontage.saveBorrowing(borrowing.convertToEntity(customer, agiota)));
+    public ResponseEntity<SaveBorrowingResponse> saveBorrowing(@Valid @RequestBody SaveBorrowingRequest borrowing){
+        SaveBorrowingResponse response = new SaveBorrowingResponse(frontage.saveBorrowing(borrowing.convertToEntity()));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -46,6 +43,11 @@ public class BorrowingController {
     @PostMapping("/{id}/accept")
     public ResponseEntity<BorrowingResponse> acceptBorrowing(@PathVariable Long id){
         return new ResponseEntity<>(new BorrowingResponse(frontage.acceptBorrowing(id)), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/request")
+    public ResponseEntity<BorrowingResponse> requestBorrowing(@PathVariable Long id, @Valid @RequestBody BorrowingRequest borrowing){
+        return new ResponseEntity<>(new BorrowingResponse(frontage.requestBorrowing(id, borrowing)), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/installments/{installid}/pay")

@@ -15,6 +15,8 @@ public interface BorrowingServiceInterface {
 
     Borrowing accept(Long id);
 
+    Borrowing request(Long id, Customer customer);
+
     Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao);
 
     Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao);

@@ -1,7 +1,6 @@
 package com.ufape.agiota.comunication.dto.borrowing;
 
 import com.ufape.agiota.comunication.dto.agiota.AgiotaResponse;
-import com.ufape.agiota.comunication.dto.customer.CustomerResponse;
 import com.ufape.agiota.config.SpringApplicationContext;
 import com.ufape.agiota.negocio.enums.Status;
 import com.ufape.agiota.negocio.models.Borrowing;
@@ -14,8 +13,11 @@ import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class BorrowingResponse {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class SaveBorrowingResponse {
     private Long id;
     private Double fees;
     private BigDecimal value;
@@ -25,9 +27,8 @@ public class BorrowingResponse {
     private Double discount;
     private Status status;
     private AgiotaResponse agiota;
-    private CustomerResponse customer;
 
-    public BorrowingResponse(Borrowing obj) {
+    public SaveBorrowingResponse(Borrowing obj) {
         if (obj == null) throw new IllegalArgumentException("Objeto não pode ser nulo");
         else{
             ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

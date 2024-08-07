@@ -21,7 +21,8 @@ public class BorrowingService implements BorrowingServiceInterface{
 
     @Transactional
     @Override
-    public Borrowing save(Borrowing borrowing) { return repositoryBorrowing.save(borrowing); }
+    public Borrowing save(Borrowing borrowing) {
+        return repositoryBorrowing.save(borrowing); }
 
     @Override
     public void delete(Long id) { repositoryBorrowing.deleteById(id); }
@@ -47,7 +48,13 @@ public class BorrowingService implements BorrowingServiceInterface{
         return  repositoryBorrowing.save(borrowing);
     }
 
-
+    @Override
+    public Borrowing request(Long id, Customer customer){
+        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        borrowing.setCustomer(customer);
+        borrowing.setStatus(Status.SOLICITADO);
+        return repositoryBorrowing.save(borrowing);
+    }
 
 
     @Override

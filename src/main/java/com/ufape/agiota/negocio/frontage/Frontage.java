@@ -1,6 +1,7 @@
 package com.ufape.agiota.negocio.frontage;
 
 
+import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.negocio.models.*;
 import com.ufape.agiota.negocio.service.AgiotaServiceInterface;
 import com.ufape.agiota.negocio.models.Customer;
@@ -52,10 +53,6 @@ public class Frontage {
         return agiotaService.findAll();
     }
 
-    public Agiota updateAgiota(Long id, Agiota agiota) {
-        return agiotaService.update(id, agiota);
-    }
-
     // =================== Borrowing =================== //
 
     public Borrowing saveBorrowing(Borrowing borrowing) { return borrowingService.save(borrowing); }
@@ -64,7 +61,7 @@ public class Frontage {
 
     public Borrowing deniedBorrowing(Long id) { return borrowingService.find(id); }
 
-    public Borrowing acceptBorrowing(Long id) { return borrowingService.find(id); }
+    public Borrowing acceptBorrowing(Long id) { return borrowingService.accept(id); }
 
     public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {return borrowingService.evaluateCustomerBorrowing(id,avaliacao);}
 
@@ -73,5 +70,9 @@ public class Frontage {
     public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
 
     public List<Installments> listInstallments(Long id) { return borrowingService.listInstallments(id); }
+
+    public Borrowing requestBorrowing(Long id, BorrowingRequest request) {
+        Customer customer = clienteService.find(request.getCustomerId());
+        return borrowingService.request(id, customer); }
 
 }

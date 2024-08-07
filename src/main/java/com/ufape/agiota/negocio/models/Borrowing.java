@@ -1,6 +1,6 @@
 package com.ufape.agiota.negocio.models;
 
-import com.ufape.agiota.negocio.enums.Avaliado;
+
 import com.ufape.agiota.negocio.enums.Frequency;
 import com.ufape.agiota.negocio.enums.Status;
 import jakarta.persistence.*;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Entity
@@ -25,9 +25,9 @@ public class Borrowing {
     private double fees;
     private BigDecimal value;
     private int numberInstallments;
+    private int payday;
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar initialDate;
-    private int payday;
     @Enumerated (EnumType.STRING)
     private Frequency frequency;
     @Enumerated (EnumType.STRING)
@@ -35,8 +35,10 @@ public class Borrowing {
     private double discount;
 
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
     @ManyToOne
+    @JoinColumn(name = "agiota_id")
     private Agiota agiota;
 
     @OneToMany
@@ -48,16 +50,29 @@ public class Borrowing {
     private  List<Avaliacao> listaAvaliacoes;
 
 
-    public Borrowing(BigDecimal value, int numberInstallments, int payday, Frequency frequency, Customer customer, Agiota agiota) {
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy
+                ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+                : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy
+                ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
+                : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass)
+            return false;
+        Borrowing borrowing = (Borrowing) o;
+        return getId() != null && Objects.equals(getId(), borrowing.getId());
+    }
 
-        this.value = value;
-        this.numberInstallments = numberInstallments;
-        this.payday = payday;
-        this.frequency = frequency;
-        this.fees = agiota.getFees();
-        this.customer = customer;
-        this.agiota = agiota;
-        this.status = Status.SOLICITADO;
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy
+                ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+                : getClass().hashCode();
     }
 
 
