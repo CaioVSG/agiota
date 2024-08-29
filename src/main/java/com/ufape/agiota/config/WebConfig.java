@@ -24,7 +24,7 @@ public class WebConfig {
                 )
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().authenticated()
-                );
+                ).oauth2ResourceServer(auth -> auth.jwt(token -> token.jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter())));
         return http.build();
     }
 
