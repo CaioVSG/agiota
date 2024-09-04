@@ -23,6 +23,11 @@ public class WebConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless session management
                 )
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/security/**").permitAll()
+                        .requestMatchers("/api-doc/**").permitAll()
+                        .requestMatchers("/customer/**").hasAnyRole("CUSTOMER", "ADMINISTRADOR")
+                        .requestMatchers("/agiota/**").hasAnyRole("AGIOTA", "ADMINISTRADOR")
+                        .requestMatchers("/borrowing/**").hasAnyRole("CUSTOMER", "ADMINISTRADOR", "AGIOTA")
                         .anyRequest().authenticated()
                 ).oauth2ResourceServer(auth -> auth.jwt(token -> token.jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter())));
         return http.build();

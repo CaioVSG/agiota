@@ -42,11 +42,11 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
 
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
-        Set<String> rolesWithPrefix = new HashSet<>(getRealmRoles(jwt));
+        Set<String> rolesWithPrefix = new HashSet<>(getResourceRoles(jwt));
         return AuthorityUtils.createAuthorityList(rolesWithPrefix.toArray(new String[0]));
     }
 
-
+    @SuppressWarnings("unused")
     private Set<String> getRealmRoles(Jwt jwt) {
         Set<String> rolesWithPrefix = new HashSet<>();
         JsonNode json = objectMapper.convertValue(jwt.getClaim("realm_access"), JsonNode.class);
@@ -61,14 +61,14 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         Set<String> rolesWithPrefix = new HashSet<>();
         Map<String, JsonNode> map = objectMapper.convertValue(jwt.getClaim("resource_access"), new TypeReference<>() {
         });
-        for (Map.Entry<String, JsonNode> jsonNode : map.entrySet()) {
-            jsonNode
-                    .getValue()
-                    .elements()
-                    .forEachRemaining(e -> e
-                            .elements()
-                            .forEachRemaining(r -> rolesWithPrefix.add(createRole(jsonNode.getKey(), r.asText()))));
+        JsonNode clientRoles = map.get("agiota-application"); // substitua pelo ID do seu client
+
+        if (clientRoles != null) {
+            clientRoles.elements().forEachRemaining(
+                    e -> e.elements().forEachRemaining(r -> rolesWithPrefix.add(createRole(r.asText())))
+            );
         }
+        System.out.println(rolesWithPrefix);
         return rolesWithPrefix;
     }
 
