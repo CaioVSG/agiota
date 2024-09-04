@@ -6,7 +6,6 @@ import lombok.Data;
 @Entity
 @Data
 public class Agiota extends User{
-
     private double fees;
     private String billingMethod;
 }

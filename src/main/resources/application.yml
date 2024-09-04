@@ -27,7 +27,7 @@ spring:
         client:
             registration:
                 keycloak:
-                    client-id: agiota-api
+                    client-id: agiota-application
                     authorization-grant-type: authorization_code
                     scope: openid
             provider:

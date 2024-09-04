@@ -13,6 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +28,7 @@ public class BorrowingController {
     final private ModelMapper modelMapper;
     final private Facade facade;
 
+    @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
     @PostMapping
     public ResponseEntity<SaveBorrowingResponse> saveBorrowing(@Valid @RequestBody SaveBorrowingRequest borrowing){
         SaveBorrowingResponse response = new SaveBorrowingResponse(facade.saveBorrowing(borrowing.convertToEntity()));
@@ -35,11 +41,13 @@ public class BorrowingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
     @PostMapping("/{id}/denied")
     public ResponseEntity<BorrowingResponse> deniedBorrowing(@PathVariable Long id){
         return new ResponseEntity<>(new BorrowingResponse(facade.deniedBorrowing(id)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
     @PostMapping("/{id}/accept")
     public ResponseEntity<BorrowingResponse> acceptBorrowing(@PathVariable Long id){
         return new ResponseEntity<>(new BorrowingResponse(facade.acceptBorrowing(id)), HttpStatus.OK);
@@ -57,17 +65,24 @@ public class BorrowingController {
 
     @GetMapping("/{id}/installments")
     public ResponseEntity<List<InstallmentResponse>> listInstallments(@PathVariable Long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+        if (!principal.getSubject().equals(facade.findBorrowing(id).getCustomer().getIdKc())){
+            throw new AccessDeniedException("Você não tem permissão para acessar este recurso");
+        }
         List<InstallmentResponse> response = facade.listInstallments(id).stream().map(InstallmentResponse::new).toList();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
-
+    @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
     @PostMapping("/evaluateCustomer/{id}")
     public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
         return new ResponseEntity<>( new BorrowingResponse(facade.evaluateCustomerBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
     @PostMapping("/evaluateAgiota/{id}")
     public ResponseEntity<BorrowingResponse> evaluateAgiotaBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
         return new ResponseEntity<>( new BorrowingResponse(facade.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);

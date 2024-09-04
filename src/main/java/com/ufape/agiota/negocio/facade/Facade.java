@@ -5,6 +5,7 @@ import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.negocio.models.*;
 import com.ufape.agiota.negocio.service.AgiotaServiceInterface;
 import com.ufape.agiota.negocio.models.Customer;
+import com.ufape.agiota.negocio.service.AuthService;
 import com.ufape.agiota.negocio.service.BorrowingServiceInterface;
 import com.ufape.agiota.negocio.service.CustomerServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,12 @@ public class Facade {
     final private CustomerServiceInterface clienteService;
     final private AgiotaServiceInterface agiotaService;
     final private BorrowingServiceInterface borrowingService;
+    final private AuthService authService;
+
+    // ================== Auth ================== //
+    public boolean checkDuplicatedUser(String id) {
+        return authService.checkDuplicatedUser(id);
+    }
 
     // ================== Customer ================== //
 
