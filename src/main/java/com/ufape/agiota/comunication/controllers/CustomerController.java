@@ -10,11 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/customer") @RequiredArgsConstructor
@@ -31,14 +31,13 @@ public class CustomerController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'AGIOTA', 'CUSTOMER')")
+
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponse> findCustomer(@PathVariable Long id){
         CustomerResponse response = new CustomerResponse(facade.findCustomer(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'AGIOTA', 'CUSTOMER')")
     @GetMapping
     public ResponseEntity<Iterable<CustomerResponse>> findAllCustomers(){
         Iterable<CustomerResponse> response = facade.findAllCustomers().stream().map(CustomerResponse::new).toList();

@@ -18,6 +18,8 @@ public abstract class User {
     private Long id;
 
     private String idKc;
+    private String username;
+    private String password;
     private String name;
     private String cpf;
     private String phone;

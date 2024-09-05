@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -45,14 +44,14 @@ public class AgiotaController {
         AgiotaResponse response = new AgiotaResponse(facade.saveAgiota(agiota));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'AGIOTA', 'CUSTOMER')")
+
     @GetMapping("/agiota/{id}")
     public ResponseEntity<AgiotaResponse> findAgiota(@PathVariable Long id){
         AgiotaResponse response = new AgiotaResponse(facade.findAgiota(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'AGIOTA', 'CUSTOMER')")
+
     @GetMapping("/agiotas")
     public ResponseEntity<Iterable<AgiotaResponse>> findAllAgiotas(){
         Iterable<AgiotaResponse> response = facade.findAllAgiotas().stream().map(AgiotaResponse::new).toList();

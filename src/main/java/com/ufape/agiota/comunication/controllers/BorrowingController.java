@@ -35,6 +35,7 @@ public class BorrowingController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<BorrowingResponse> findBorrowing(@PathVariable Long id){
         BorrowingResponse response = new BorrowingResponse(facade.findBorrowing(id));
@@ -53,15 +54,18 @@ public class BorrowingController {
         return new ResponseEntity<>(new BorrowingResponse(facade.acceptBorrowing(id)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
     @PostMapping("/{id}/request")
     public ResponseEntity<BorrowingResponse> requestBorrowing(@PathVariable Long id, @Valid @RequestBody BorrowingRequest borrowing){
         return new ResponseEntity<>(new BorrowingResponse(facade.requestBorrowing(id, borrowing)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
     @PostMapping("/{id}/installments/{installid}/pay")
     public ResponseEntity<PaymentResponse> payBorrowing(@PathVariable Long id, @PathVariable Long installid){
         return new ResponseEntity<>(new PaymentResponse(facade.payBorrowing(id, installid)), HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}/installments")
     public ResponseEntity<List<InstallmentResponse>> listInstallments(@PathVariable Long id){

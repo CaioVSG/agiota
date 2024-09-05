@@ -42,7 +42,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
 
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
-        Set<String> rolesWithPrefix = new HashSet<>(getResourceRoles(jwt));
+        Set<String> rolesWithPrefix = new HashSet<>(getRealmRoles(jwt));
         return AuthorityUtils.createAuthorityList(rolesWithPrefix.toArray(new String[0]));
     }
 
@@ -61,19 +61,19 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         Set<String> rolesWithPrefix = new HashSet<>();
         Map<String, JsonNode> map = objectMapper.convertValue(jwt.getClaim("resource_access"), new TypeReference<>() {
         });
-        JsonNode clientRoles = map.get("agiota-application"); // substitua pelo ID do seu client
-
-        if (clientRoles != null) {
-            clientRoles.elements().forEachRemaining(
-                    e -> e.elements().forEachRemaining(r -> rolesWithPrefix.add(createRole(r.asText())))
-            );
+        for (Map.Entry<String, JsonNode> jsonNode : map.entrySet()) {
+            jsonNode
+                    .getValue()
+                    .elements()
+                    .forEachRemaining(e -> e
+                            .elements()
+                            .forEachRemaining(r -> rolesWithPrefix.add(createRole(jsonNode.getKey(), r.asText()))));
         }
-        System.out.println(rolesWithPrefix);
         return rolesWithPrefix;
     }
 
     private String createRole(String... values) {
-        StringBuilder role = new StringBuilder(); //"ROLE"
+        StringBuilder role = new StringBuilder("ROLE_");  // Adiciona o prefixo ROLE_
         for (String value : values) {
             role.append(value.toUpperCase());
         }
