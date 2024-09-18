@@ -1,36 +1,24 @@
 package com.ufape.agiota.comunication.dto.customer;
 
 import com.ufape.agiota.comunication.dto.adress.AdressRequest;
-import com.ufape.agiota.comunication.dto.tags.Username;
-import com.ufape.agiota.config.SpringApplicationContext;
-import com.ufape.agiota.negocio.models.Adress;
-import com.ufape.agiota.negocio.models.Customer;
+
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
+
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class CustomerRequest {
+public class CustomerUpdateRequest {
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
     private String name;
 
-    @NotBlank(message = "Username é obrigatório")
-    @Size(min = 2, max = 20, message = "Username deve ter entre 2 e 20 caracteres")
-
-    @Username
-    private String username;
 
     @NotBlank(message = "email é obrigatório")
     @Email(message = "Email inválido")
     private String email;
-
-    @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
-    private String password;
 
 
     @NotBlank(message = "CPF é obrigatório")
@@ -49,10 +37,4 @@ public class CustomerRequest {
     private String workplace;
     private String workPhone;
 
-    public Customer convertToEntity() {
-        ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-        Customer obj = modelMapper.map(this, Customer.class);
-        obj.setAdress(modelMapper.map(this.adress, Adress.class));
-        return obj;
-    }
 }

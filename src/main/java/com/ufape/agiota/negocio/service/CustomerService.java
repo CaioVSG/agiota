@@ -3,6 +3,7 @@ package com.ufape.agiota.negocio.service;
 import com.ufape.agiota.dados.repository.RepositoryCostumer;
 import com.ufape.agiota.negocio.models.Customer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +15,19 @@ public class CustomerService implements CustomerServiceInterface {
 
     @Transactional
     @Override
-    public Customer save(Customer customer) { return repositoryCostumer.save(customer); }
+    public Customer save(Customer customer) {
+        return repositoryCostumer.save(customer); }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, String idSession) {
+        if (!find(id).getIdKc().equals(idSession)) throw new AccessDeniedException("User not allowed");
         repositoryCostumer.deleteById(id);
+    }
+
+    @Override
+    public Customer update(Customer customer, String idSession) {
+        if (!customer.getIdKc().equals(idSession)) throw new AccessDeniedException("User not allowed");
+        return repositoryCostumer.save(customer);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.customer.CustomerRequest;
 import com.ufape.agiota.comunication.dto.customer.CustomerResponse;
+import com.ufape.agiota.comunication.dto.customer.CustomerUpdateRequest;
 import com.ufape.agiota.negocio.facade.Facade;
 import com.ufape.agiota.negocio.models.Customer;
 import jakarta.validation.Valid;
@@ -22,12 +23,9 @@ public class CustomerController {
     final private ModelMapper modelMapper;
     final private Facade facade;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<CustomerResponse> saveCustomer(@Valid @RequestBody CustomerRequest customer) throws AccessDeniedException{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt principal = (Jwt) authentication.getPrincipal();
-        if (facade.checkDuplicatedUser(principal.getSubject())){throw new AccessDeniedException("User already exists");}
-        CustomerResponse response = new CustomerResponse(facade.saveCustomer(customer.convertToEntity()));
+        CustomerResponse response = new CustomerResponse(facade.saveCustomer(customer.convertToEntity(), customer.getPassword()));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -45,13 +43,12 @@ public class CustomerController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerRequest entity){
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerUpdateRequest entity){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt principal = (Jwt) authentication.getPrincipal();
         Customer customer = facade.findCustomer(id);
-        if(!principal.getSubject().equals(customer.getIdKc())){throw new AccessDeniedException("User not allowed");}
         modelMapper.map(entity, customer);
-        CustomerResponse response = new CustomerResponse(facade.saveCustomer(customer));
+        CustomerResponse response = new CustomerResponse(facade.updateCustomer(customer, principal.getSubject()));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -59,8 +56,7 @@ public class CustomerController {
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt principal = (Jwt) authentication.getPrincipal();
-        if(!principal.getSubject().equals(facade.findCustomer(id).getIdKc())){throw new AccessDeniedException("User not allowed");}
-        facade.deleteCustomer(id);
+        facade.deleteCustomer(id, principal.getSubject());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

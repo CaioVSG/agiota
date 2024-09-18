@@ -3,11 +3,9 @@ package com.ufape.agiota.negocio.facade;
 
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.negocio.models.*;
-import com.ufape.agiota.negocio.service.AgiotaServiceInterface;
+import com.ufape.agiota.negocio.service.*;
 import com.ufape.agiota.negocio.models.Customer;
-import com.ufape.agiota.negocio.service.AuthService;
-import com.ufape.agiota.negocio.service.BorrowingServiceInterface;
-import com.ufape.agiota.negocio.service.CustomerServiceInterface;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +14,11 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class Facade {
-    final private CustomerServiceInterface clienteService;
+    final private CustomerServiceInterface customerService;
     final private AgiotaServiceInterface agiotaService;
     final private BorrowingServiceInterface borrowingService;
     final private AuthService authService;
+    final private KeycloakService keycloakService;
 
     // ================== Auth ================== //
     public boolean checkDuplicatedUser(String id) {
@@ -28,18 +27,47 @@ public class Facade {
 
     // ================== Customer ================== //
 
-    public Customer saveCustomer(Customer customer) { return clienteService.save(customer); }
+    public Customer saveCustomer(Customer customer, String password) {
+        String userKcId = null;
+        try {
+            Response keycloakResponse = keycloakService.createUser(customer.getUsername(), customer.getEmail(), password, "customer");
+            if (keycloakResponse.getStatus() == 201) {
+                userKcId = keycloakService.getUserId(customer.getUsername());
+                customer.setIdKc(userKcId);
+                return customerService.save(customer);
+            }
+        }catch (Exception e){
+            if (userKcId != null) keycloakService.deleteUser(userKcId);
+        }
+        throw new RuntimeException("Error creating user");
+    }
 
-    public void deleteCustomer(Long id) {
-        clienteService.delete(id);
+    public Customer updateCustomer(Customer customer, String idSession) {
+        try {
+            Customer newCustomer =  customerService.update(customer, idSession);
+            keycloakService.updateUser(newCustomer.getIdKc(), customer.getEmail());
+            return newCustomer;
+        }catch (Exception e){
+            throw new RuntimeException("Error updating user: " + e.getMessage());
+        }
+    }
+
+    public void deleteCustomer(Long id, String idSession) {
+        try {
+            customerService.delete(id, idSession);
+            keycloakService.deleteUser(idSession);
+        }catch (Exception e){
+            throw new RuntimeException("Error deleting user");
+        }
+
     }
 
     public Customer findCustomer(Long id) {
-        return clienteService.find(id);
+        return customerService.find(id);
     }
 
     public List<Customer> findAllCustomers() {
-        return clienteService.findAll();
+        return customerService.findAll();
     }
 
     // ================== Agiota ================== //
@@ -79,7 +107,7 @@ public class Facade {
     public List<Installments> listInstallments(Long id) { return borrowingService.listInstallments(id); }
 
     public Borrowing requestBorrowing(Long id, BorrowingRequest request) {
-        Customer customer = clienteService.find(request.getCustomerId());
+        Customer customer = customerService.find(request.getCustomerId());
         return borrowingService.request(id, customer); }
 
 }

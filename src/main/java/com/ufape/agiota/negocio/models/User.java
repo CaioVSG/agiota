@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
@@ -18,13 +19,15 @@ public abstract class User {
     private Long id;
 
     private String idKc;
-    private String username;
-    private String password;
     private String name;
+    private String username;
+    private String email;
     private String cpf;
     private String phone;
 
     @OneToOne
     @Cascade(CascadeType.ALL)
     private Adress adress;
+
+
 }
