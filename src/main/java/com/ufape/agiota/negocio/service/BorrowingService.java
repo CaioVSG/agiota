@@ -1,7 +1,7 @@
 package com.ufape.agiota.negocio.service;
 
-import com.ufape.agiota.dados.repository.RepositoryBorrowing;
-import com.ufape.agiota.dados.repository.RepositoryPayment;
+import com.ufape.agiota.dados.repository.BorrowingRepository;
+import com.ufape.agiota.dados.repository.PaymentRepository;
 import com.ufape.agiota.negocio.enums.Avaliado;
 import com.ufape.agiota.negocio.enums.Frequency;
 import com.ufape.agiota.negocio.enums.Status;
@@ -16,50 +16,50 @@ import java.util.*;
 
 @Service @RequiredArgsConstructor
 public class BorrowingService implements BorrowingServiceInterface{
-    final private RepositoryBorrowing repositoryBorrowing;
-    final private RepositoryPayment repositoryPayment;
+    final private BorrowingRepository borrowingRepository;
+    final private PaymentRepository paymentRepository;
 
     @Transactional
     @Override
     public Borrowing save(Borrowing borrowing) {
-        return repositoryBorrowing.save(borrowing); }
+        return borrowingRepository.save(borrowing); }
 
     @Override
-    public void delete(Long id) { repositoryBorrowing.deleteById(id); }
+    public void delete(Long id) { borrowingRepository.deleteById(id); }
 
     @Override
-    public Borrowing find(Long id) { return repositoryBorrowing.findById(id).orElse(null); }
+    public Borrowing find(Long id) { return borrowingRepository.findById(id).orElse(null); }
 
     @Override
     public Borrowing denied(Long id) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
 
         borrowing.setStatus(Status.RECUSADO);
-        return  repositoryBorrowing.save(borrowing);
+        return  borrowingRepository.save(borrowing);
     }
 
     @Override
     public Borrowing accept(Long id) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         borrowing.setInitialDate(new GregorianCalendar());
         borrowing.setStatus(Status.ANDAMENTO);
         borrowing.setDiscount(0.0);
         borrowing.setInstallmentsList(gerarParcelas(borrowing));
-        return  repositoryBorrowing.save(borrowing);
+        return  borrowingRepository.save(borrowing);
     }
 
     @Override
     public Borrowing request(Long id, Customer customer){
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         borrowing.setCustomer(customer);
         borrowing.setStatus(Status.SOLICITADO);
-        return repositoryBorrowing.save(borrowing);
+        return borrowingRepository.save(borrowing);
     }
 
 
     @Override
     public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
 
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
@@ -67,12 +67,12 @@ public class BorrowingService implements BorrowingServiceInterface{
             }
         }
         borrowing.getListaAvaliacoes().add(avaliacao);
-        return repositoryBorrowing.save(borrowing);
+        return borrowingRepository.save(borrowing);
     }
 
     @Override
     public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
 
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
@@ -80,24 +80,24 @@ public class BorrowingService implements BorrowingServiceInterface{
             }
         }
         borrowing.getListaAvaliacoes().add(avaliacao);
-        return repositoryBorrowing.save(borrowing);
+        return borrowingRepository.save(borrowing);
     }
 
     @Override
     public List<Installments> listInstallments(Long id){
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         return borrowing.getInstallmentsList();
     }
 
 
 
     public Payment pay(Long id, Long installid) {
-        Borrowing borrowing = repositoryBorrowing.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
+        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Payment payment = new Payment();
         for (int i = 0; i < borrowing.getInstallmentsList().size(); i++) {
             if (Objects.equals(borrowing.getInstallmentsList().get(i).getId(), installid)) {
                   borrowing.getInstallmentsList().get(i).setStatus(true);
-                  repositoryBorrowing.save(borrowing);
+                  borrowingRepository.save(borrowing);
                   payment.setInstallments(borrowing.getInstallmentsList().get(i));
                   payment.setValue(borrowing.getInstallmentsList().get(i).getValue());
                   payment.setPaymenDate(borrowing.getInstallmentsList().get(i).getPaymentDate().getTime());
@@ -105,7 +105,7 @@ public class BorrowingService implements BorrowingServiceInterface{
             }
         }
 
-        return  repositoryPayment.save(payment);
+        return  paymentRepository.save(payment);
     }
 
 

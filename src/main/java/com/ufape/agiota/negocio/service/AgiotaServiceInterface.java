@@ -6,12 +6,12 @@ import java.util.List;
 public interface AgiotaServiceInterface {
     Agiota save(Agiota agiota);
 
-    void delete(Long id);
+    void delete(Long id, String idSession);
 
     Agiota find(Long id);
 
     List<Agiota> findAll();
 
-    Agiota update(Long id, Agiota agiota);
+    Agiota update(Agiota agiota, String idSession);
     
 }

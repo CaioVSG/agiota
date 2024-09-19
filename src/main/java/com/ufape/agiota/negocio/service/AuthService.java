@@ -1,18 +1,18 @@
 package com.ufape.agiota.negocio.service;
 
-import com.ufape.agiota.dados.repository.RepositoryAuth;
+import com.ufape.agiota.dados.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final RepositoryAuth repositoryAuth;
+    private final AuthRepository authRepository;
 
 
 
 
     public boolean checkDuplicatedUser(String id) {
-        return repositoryAuth.findByIdKc(id).isPresent();
+        return authRepository.findByIdKc(id).isPresent();
     }
 }
