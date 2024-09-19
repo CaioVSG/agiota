@@ -18,12 +18,14 @@ public class CustomerService implements CustomerServiceInterface {
     public Customer save(Customer customer) {
         return repositoryCostumer.save(customer); }
 
+    @Transactional
     @Override
     public void delete(Long id, String idSession) {
         if (!find(id).getIdKc().equals(idSession)) throw new AccessDeniedException("User not allowed");
         repositoryCostumer.deleteById(id);
     }
 
+    @Transactional
     @Override
     public Customer update(Customer customer, String idSession) {
         if (!customer.getIdKc().equals(idSession)) throw new AccessDeniedException("User not allowed");

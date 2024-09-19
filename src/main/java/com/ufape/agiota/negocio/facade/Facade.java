@@ -8,6 +8,7 @@ import com.ufape.agiota.negocio.models.Customer;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class Facade {
 
     // ================== Customer ================== //
 
+    @Transactional
     public Customer saveCustomer(Customer customer, String password) {
         String userKcId = null;
         try {
@@ -42,6 +44,7 @@ public class Facade {
         throw new RuntimeException("Error creating user");
     }
 
+    @Transactional
     public Customer updateCustomer(Customer customer, String idSession) {
         try {
             Customer newCustomer =  customerService.update(customer, idSession);
@@ -52,6 +55,7 @@ public class Facade {
         }
     }
 
+    @Transactional
     public void deleteCustomer(Long id, String idSession) {
         try {
             customerService.delete(id, idSession);
