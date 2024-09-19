@@ -19,8 +19,6 @@ public class CustomerRequest {
     private String name;
 
     @NotBlank(message = "Username é obrigatório")
-    @Size(min = 2, max = 20, message = "Username deve ter entre 2 e 20 caracteres")
-
     @Username
     private String username;
 

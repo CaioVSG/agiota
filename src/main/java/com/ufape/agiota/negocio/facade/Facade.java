@@ -18,13 +18,7 @@ public class Facade {
     final private CustomerServiceInterface customerService;
     final private AgiotaServiceInterface agiotaService;
     final private BorrowingServiceInterface borrowingService;
-    final private AuthService authService;
     final private KeycloakService keycloakService;
-
-    // ================== Auth ================== //
-    public boolean checkDuplicatedUser(String id) {
-        return authService.checkDuplicatedUser(id);
-    }
 
     // ================== Customer ================== //
 
@@ -76,12 +70,30 @@ public class Facade {
 
     // ================== Agiota ================== //
 
-    public Agiota saveAgiota(Agiota agiota) {
-        return agiotaService.save(agiota);
+    @Transactional
+    public Agiota saveAgiota(Agiota agiota, String password) {
+        String userKcId = null;
+        try {
+            Response keycloakResponse = keycloakService.createUser(agiota.getUsername(), agiota.getEmail(), password, "agiota");
+            if (keycloakResponse.getStatus() == 201) {
+                userKcId = keycloakService.getUserId(agiota.getUsername());
+                agiota.setIdKc(userKcId);
+                return agiotaService.save(agiota);
+            }
+        }catch (Exception e){
+            if (userKcId != null) keycloakService.deleteUser(userKcId);
+        }
+        throw new RuntimeException("Error creating user");
     }
 
-    public void deleteAgiota(Long id) {
-        agiotaService.delete(id);
+    @Transactional
+    public void deleteAgiota(Long id, String idSession) {
+        try {
+            agiotaService.delete(id, idSession);
+            keycloakService.deleteUser(idSession);
+        }catch (Exception e){
+            throw new RuntimeException("Error deleting user");
+        }
     }
 
     public Agiota findAgiota(Long id) {
@@ -90,6 +102,17 @@ public class Facade {
 
     public List<Agiota> findAllAgiotas() {
         return agiotaService.findAll();
+    }
+
+    @Transactional
+    public Agiota updateAgiota(Agiota agiota, String idSession) {
+        try {
+            Agiota newAgiota =  agiotaService.update(agiota, idSession);
+            keycloakService.updateUser(newAgiota.getIdKc(), agiota.getEmail());
+            return newAgiota;
+        }catch (Exception e){
+            throw new RuntimeException("Error updating user: " + e.getMessage());
+        }
     }
 
     // =================== Borrowing =================== //
