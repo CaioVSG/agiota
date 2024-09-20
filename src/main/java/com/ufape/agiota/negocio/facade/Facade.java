@@ -1,6 +1,7 @@
 package com.ufape.agiota.negocio.facade;
 
 
+import com.ufape.agiota.comunication.dto.Auth.TokenResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.negocio.models.*;
 import com.ufape.agiota.negocio.service.*;
@@ -19,6 +20,11 @@ public class Facade {
     final private AgiotaServiceInterface agiotaService;
     final private BorrowingServiceInterface borrowingService;
     final private KeycloakService keycloakService;
+
+    // ================== Keycloak ================== //
+    public TokenResponse login(String username, String password) throws Exception {
+        return keycloakService.login(username, password);
+    }
 
     // ================== Customer ================== //
 
@@ -90,6 +96,10 @@ public class Facade {
     public void deleteAgiota(Long id, String idSession) {
         try {
             agiotaService.delete(id, idSession);
+        }catch (Exception e){
+            throw new RuntimeException("Error deleting user");
+        }
+        try {
             keycloakService.deleteUser(idSession);
         }catch (Exception e){
             throw new RuntimeException("Error deleting user");
