@@ -1,12 +1,15 @@
 package com.ufape.agiota.negocio.service;
 
 import com.ufape.agiota.comunication.dto.Auth.TokenResponse;
+import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,14 +19,20 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 
-@Service
+@Service @RequiredArgsConstructor
 public class KeycloakService {
+    private Keycloak keycloak;
 
-    private final Keycloak keycloak;
-    private final String realm = "agiota";
-    private final String keycloakServerUrl = "http://localhost:8080/";
+    @Value("${keycloak.realm}")
+    private String realm;
 
-    public KeycloakService() {
+    @Value("${common.keycloakAddress}")
+    private String keycloakServerUrl;
+
+
+    @PostConstruct
+    public void init() {
+        System.out.println(keycloakServerUrl);
         // Inicialize o cliente Keycloak
         this.keycloak = KeycloakBuilder.builder()
                 .serverUrl(keycloakServerUrl) // URL do servidor Keycloak
@@ -46,6 +55,7 @@ public class KeycloakService {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "password");
         formData.add("client_id", "agiota-application");
+
         formData.add("client_secret", "bBYtcrDGFIzS5J8gHNJKORwPcSccsHsF");
         formData.add("username", email);
         formData.add("password", password);
@@ -54,6 +64,7 @@ public class KeycloakService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
         ResponseEntity<TokenResponse> response = restTemplate.exchange(tokenUrl, HttpMethod.POST, request, TokenResponse.class);
 
+        // Verificar se a requisição foi bem sucedida e retornar o token adicionando as roles no response
         if (response.getStatusCode() == HttpStatus.OK) {
             TokenResponse tokenResponse = response.getBody();
             String userId = getUserId(email);

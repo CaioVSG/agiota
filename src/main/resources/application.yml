@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+common:
+  keycloakAddress: http://localhost:8080/
+keycloak:
+  realm: agiota
 
 spring:
   application:
@@ -28,7 +32,7 @@ spring:
         client:
             provider:
                 keycloak:
-                    issuer-uri: http://localhost:8080/realms/agiota
+                    issuer-uri: ${common.keycloakAddress}realms/agiota
                     user-name-attribute: preferred_username
         resourceserver:
             jwt:
