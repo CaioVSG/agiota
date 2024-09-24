@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 public class CustomerResponse {
     private Long id;
     private String name;
+    private String username;
+    private String email;
     private String cpf;
     private String phone;
     private AdressResponse adress;

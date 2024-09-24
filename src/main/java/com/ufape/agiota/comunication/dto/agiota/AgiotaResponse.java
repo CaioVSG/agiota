@@ -15,6 +15,8 @@ import lombok.Setter;
 public class AgiotaResponse {
     private Long id;
     private String name;
+    private String username;
+    private String email;
     private String cpf;
     private String phone;
     private  AdressResponse adress;
