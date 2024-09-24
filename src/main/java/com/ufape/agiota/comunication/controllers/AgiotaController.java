@@ -73,7 +73,4 @@ public class AgiotaController {
         AgiotaResponse response = new AgiotaResponse(facade.findAgiotaByIdKc(principal.getSubject()));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    
-    
 }

@@ -33,7 +33,6 @@ public class BorrowingService implements BorrowingServiceInterface{
     @Override
     public Borrowing denied(Long id) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
-
         borrowing.setStatus(Status.RECUSADO);
         return  borrowingRepository.save(borrowing);
     }
@@ -89,7 +88,20 @@ public class BorrowingService implements BorrowingServiceInterface{
         return borrowing.getInstallmentsList();
     }
 
+    @Override
+    public List<Borrowing> findAvailable(){
+        return borrowingRepository.findByStatus(Status.DISPONIVEL);
+    }
 
+    @Override
+    public List<Borrowing> findAgiotaBorrowings(Long id){
+        return borrowingRepository.findByAgiotaId(id);
+    }
+
+    @Override
+    public List<Borrowing> findCustomerBorrowings(Long id){
+        return borrowingRepository.findByCustomerId(id);
+    }
 
     public Payment pay(Long id, Long installid) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));

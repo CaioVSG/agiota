@@ -1,16 +1,14 @@
 package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.Avaliacao.AvaliacaoRequest;
-import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingRequest;
-import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
+import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
 import com.ufape.agiota.comunication.dto.installment.InstallmentResponse;
 import com.ufape.agiota.comunication.dto.payment.PaymentResponse;
 import com.ufape.agiota.negocio.facade.Facade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,14 +23,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/borrowing") @RequiredArgsConstructor
 public class BorrowingController {
-    final private ModelMapper modelMapper;
     final private Facade facade;
 
     @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
     @PostMapping
-    public ResponseEntity<SaveBorrowingResponse> saveBorrowing(@Valid @RequestBody SaveBorrowingRequest borrowing){
-        SaveBorrowingResponse response = new SaveBorrowingResponse(facade.saveBorrowing(borrowing.convertToEntity()));
+    public ResponseEntity<SaveBorrowingResponse> saveBorrowing(@Valid @RequestBody BorrowingRequest borrowing){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        SaveBorrowingResponse response = new SaveBorrowingResponse(facade.saveBorrowing(borrowing.convertToEntity(), principal.getSubject()));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BorrowingResponse>> listBorrowings(){
+        List<BorrowingResponse> response = facade.findAvailable().stream().map(BorrowingResponse::new).toList();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('AGIOTA')")
+    @GetMapping("/agiota")
+    public ResponseEntity<List<BorrowingResponse>> listAgiotaBorrowings(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        List<BorrowingResponse> response = facade.findAgiotaBorrowings(principal.getSubject()).stream().map(BorrowingResponse::new).toList();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/customer")
+    public ResponseEntity<List<BorrowingResponse>> listCustomerBorrowings(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        List<BorrowingResponse> response = facade.findCustomerBorrowings(principal.getSubject()).stream().map(BorrowingResponse::new).toList();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -56,8 +79,10 @@ public class BorrowingController {
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
     @PostMapping("/{id}/request")
-    public ResponseEntity<BorrowingResponse> requestBorrowing(@PathVariable Long id, @Valid @RequestBody BorrowingRequest borrowing){
-        return new ResponseEntity<>(new BorrowingResponse(facade.requestBorrowing(id, borrowing)), HttpStatus.OK);
+    public ResponseEntity<BorrowingResponse> requestBorrowing(@PathVariable Long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new ResponseEntity<>(new BorrowingResponse(facade.requestBorrowing(id, principal.getSubject())), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")

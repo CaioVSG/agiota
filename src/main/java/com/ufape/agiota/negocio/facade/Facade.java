@@ -2,7 +2,6 @@ package com.ufape.agiota.negocio.facade;
 
 
 import com.ufape.agiota.comunication.dto.Auth.TokenResponse;
-import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.negocio.models.*;
 import com.ufape.agiota.negocio.service.*;
 import com.ufape.agiota.negocio.models.Customer;
@@ -135,11 +134,25 @@ public class Facade {
 
     // =================== Borrowing =================== //
 
-    public Borrowing saveBorrowing(Borrowing borrowing) { return borrowingService.save(borrowing); }
+    public Borrowing saveBorrowing(Borrowing borrowing, String userId) {
+        Agiota agiota = agiotaService.findByIdKc(userId);
+        borrowing.setAgiota(agiota);
+        borrowing.setFees(agiota.getFees());
+        return borrowingService.save(borrowing); }
 
     public Borrowing findBorrowing(Long id) { return borrowingService.find(id); }
 
-    public Borrowing deniedBorrowing(Long id) { return borrowingService.find(id); }
+    public List<Borrowing> findAgiotaBorrowings(String id) {
+        Agiota agiota = agiotaService.findByIdKc(id);
+        return borrowingService.findAgiotaBorrowings(agiota.getId()); }
+
+    public List<Borrowing> findCustomerBorrowings(String id) {
+        Customer customer = customerService.findByIdKc(id);
+        return borrowingService.findCustomerBorrowings(customer.getId());
+    }
+    public List<Borrowing> findAvailable() { return borrowingService.findAvailable(); }
+
+    public Borrowing deniedBorrowing(Long id) { return borrowingService.denied(id); }
 
     public Borrowing acceptBorrowing(Long id) { return borrowingService.accept(id); }
 
@@ -151,8 +164,8 @@ public class Facade {
 
     public List<Installments> listInstallments(Long id) { return borrowingService.listInstallments(id); }
 
-    public Borrowing requestBorrowing(Long id, BorrowingRequest request) {
-        Customer customer = customerService.find(request.getCustomerId());
+    public Borrowing requestBorrowing(Long id, String idSession) {
+        Customer customer = customerService.findByIdKc(idSession);
         return borrowingService.request(id, customer); }
 
 }

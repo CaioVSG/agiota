@@ -21,6 +21,12 @@ public interface BorrowingServiceInterface {
 
     Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao);
 
+    List<Borrowing> findAvailable();
+
+    List<Borrowing> findAgiotaBorrowings(Long id);
+
+    List<Borrowing> findCustomerBorrowings(Long id);
+
     Payment pay(Long id, Long installid);
 
     List<Installments> listInstallments(Long id);

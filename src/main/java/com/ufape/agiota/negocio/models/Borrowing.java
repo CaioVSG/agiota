@@ -35,10 +35,9 @@ public class Borrowing {
     private double discount;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
     private Customer customer;
+
     @ManyToOne
-    @JoinColumn(name = "agiota_id")
     private Agiota agiota;
 
     @OneToMany
