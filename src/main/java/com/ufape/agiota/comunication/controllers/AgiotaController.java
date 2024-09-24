@@ -64,6 +64,14 @@ public class AgiotaController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/current")
+    public ResponseEntity<AgiotaResponse> currentAgiota(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        AgiotaResponse response = new AgiotaResponse(facade.findAgiotaByIdKc(principal.getSubject()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     
     
 }

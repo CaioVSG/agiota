@@ -1,6 +1,7 @@
 package com.ufape.agiota.negocio.service;
 
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +18,24 @@ public class AgiotaService implements AgiotaServiceInterface{
 
     @Transactional
     @Override
-    public void delete(Long id, String idSession) {
+    public void delete(Long id, String idSession) throws DataIntegrityViolationException {
         if (!find(id).getIdKc().equals(idSession)) throw new AccessDeniedException("User not allowed");
-        agiotaRepository.deleteById(id);
+        try {
+            agiotaRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new DataIntegrityViolationException("Error deleting user");
+        }
+
     }
 
     @Override
     public Agiota find(Long id) {
         return agiotaRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Agiota findByIdKc(String idKc) {
+        return agiotaRepository.findByIdKc(idKc);
     }
 
     @Transactional

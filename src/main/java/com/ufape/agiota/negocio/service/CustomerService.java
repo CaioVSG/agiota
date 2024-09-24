@@ -33,6 +33,11 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     @Override
+    public Customer findByIdKc(String idKc) {
+        return customerRepository.findByIdKc(idKc);
+    }
+
+    @Override
     public Customer find(Long id) {
         return customerRepository.findById(id).orElse(null);
     }

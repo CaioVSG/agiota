@@ -74,6 +74,10 @@ public class Facade {
         return customerService.findAll();
     }
 
+    public Customer findCustomerByIdKc(String id) {
+        return customerService.findByIdKc(id);
+    }
+
     // ================== Agiota ================== //
 
     @Transactional
@@ -112,6 +116,10 @@ public class Facade {
 
     public List<Agiota> findAllAgiotas() {
         return agiotaService.findAll();
+    }
+
+    public Agiota findAgiotaByIdKc(String id) {
+        return agiotaService.findByIdKc(id);
     }
 
     @Transactional

@@ -4,6 +4,8 @@ import com.ufape.agiota.negocio.models.Agiota;
 import java.util.List;
 
 public interface AgiotaServiceInterface {
+    Agiota findByIdKc(String idKc);
+
     Agiota save(Agiota agiota);
 
     void delete(Long id, String idSession);

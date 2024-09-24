@@ -60,6 +60,14 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("current")
+    public ResponseEntity<CustomerResponse> currentCustomer(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        CustomerResponse response = new CustomerResponse(facade.findCustomerByIdKc(principal.getSubject()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

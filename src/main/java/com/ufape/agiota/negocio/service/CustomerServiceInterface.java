@@ -9,6 +9,8 @@ public interface CustomerServiceInterface {
 
     void delete(Long id, String idSession);
 
+    Customer findByIdKc(String idKc);
+
     Customer find(Long id);
 
     List<Customer> findAll();
