@@ -156,9 +156,9 @@ public class Facade {
 
     public Borrowing acceptBorrowing(Long id) { return borrowingService.accept(id); }
 
-    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {return borrowingService.evaluateCustomerBorrowing(id,avaliacao);}
+    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao, String sessionId) {return borrowingService.evaluateCustomerBorrowing(id,avaliacao, sessionId);}
 
-    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao) { return borrowingService.evaluateAgiotaBorrowing(id,avaliacao);}
+    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao, String sessionId) { return borrowingService.evaluateAgiotaBorrowing(id,avaliacao, sessionId);}
 
     public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
 

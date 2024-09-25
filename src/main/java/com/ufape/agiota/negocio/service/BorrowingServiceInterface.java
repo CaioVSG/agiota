@@ -17,10 +17,6 @@ public interface BorrowingServiceInterface {
 
     Borrowing request(Long id, Customer customer);
 
-    Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao);
-
-    Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao);
-
     List<Borrowing> findAvailable();
 
     List<Borrowing> findAgiotaBorrowings(Long id);
@@ -28,6 +24,10 @@ public interface BorrowingServiceInterface {
     List<Borrowing> findCustomerBorrowings(Long id);
 
     Payment pay(Long id, Long installid);
+
+    Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao, String SessionId);
+
+    Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao, String sessionId);
 
     List<Installments> listInstallments(Long id);
 

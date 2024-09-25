@@ -106,14 +106,18 @@ public class BorrowingController {
 
 
     @PreAuthorize("hasAnyRole('AGIOTA', 'ADMINISTRADOR')")
-    @PostMapping("/evaluateCustomer/{id}")
+    @PostMapping("/evaluate-customer/{id}")
     public ResponseEntity<BorrowingResponse> evaluateCustomerBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
-        return new ResponseEntity<>( new BorrowingResponse(facade.evaluateCustomerBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new ResponseEntity<>( new BorrowingResponse(facade.evaluateCustomerBorrowing(id,avaliacao.convertToEntity(),principal.getSubject())),HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
-    @PostMapping("/evaluateAgiota/{id}")
+    @PostMapping("/evaluate-agiota/{id}")
     public ResponseEntity<BorrowingResponse> evaluateAgiotaBorrowing(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest avaliacao){
-        return new ResponseEntity<>( new BorrowingResponse(facade.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity())),HttpStatus.OK);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new ResponseEntity<>( new BorrowingResponse(facade.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity(),principal.getSubject())),HttpStatus.OK);
     }
 }

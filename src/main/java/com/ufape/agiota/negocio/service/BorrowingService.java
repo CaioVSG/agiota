@@ -1,5 +1,6 @@
 package com.ufape.agiota.negocio.service;
 
+
 import com.ufape.agiota.dados.repository.BorrowingRepository;
 import com.ufape.agiota.dados.repository.PaymentRepository;
 import com.ufape.agiota.negocio.enums.Avaliado;
@@ -7,6 +8,7 @@ import com.ufape.agiota.negocio.enums.Frequency;
 import com.ufape.agiota.negocio.enums.Status;
 import com.ufape.agiota.negocio.models.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,28 +59,34 @@ public class BorrowingService implements BorrowingServiceInterface{
 
 
     @Override
-    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao) {
+    public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao, String sessionId) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
-
+        avaliacao.setAvaliado(Avaliado.CLIENTE);
+        if (!borrowing.getCustomer().getIdKc().equals(sessionId)){
+            throw new AccessDeniedException("Você não tem permissão para avaliar este emprestimo");
+        }
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
             if (temp.getAvaliado() == Avaliado.CLIENTE){
-                throw new AvaliacaoDuplicadaException("O cliente já contem uma avaliação.");
+                throw new AvaliacaoDuplicadaException("O agiota já contem uma avaliação.");
             }
         }
-        borrowing.getListaAvaliacoes().add(avaliacao);
+        borrowing.addAvaliacoes(avaliacao);
         return borrowingRepository.save(borrowing);
     }
 
     @Override
-    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao) {
+    public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao, String sessionId) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
-
+        avaliacao.setAvaliado(Avaliado.AGIOTA);
+        if (!borrowing.getCustomer().getIdKc().equals(sessionId)){
+            throw new AccessDeniedException("Você não tem permissão para avaliar este emprestimo");
+        }
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
-            if (temp.getAvaliado() == Avaliado.CLIENTE){
-                throw new AvaliacaoDuplicadaException("O agiot já contem uma avaliação.");
+            if (temp.getAvaliado() == Avaliado.AGIOTA){
+                throw new AvaliacaoDuplicadaException("O agiota já contem uma avaliação.");
             }
         }
-        borrowing.getListaAvaliacoes().add(avaliacao);
+        borrowing.addAvaliacoes(avaliacao);
         return borrowingRepository.save(borrowing);
     }
 

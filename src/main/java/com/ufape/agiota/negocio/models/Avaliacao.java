@@ -17,6 +17,7 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private int nota;
+
     @Enumerated(EnumType.STRING)
     private Avaliado avaliado;
 }

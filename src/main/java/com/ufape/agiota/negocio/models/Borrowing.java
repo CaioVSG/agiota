@@ -46,7 +46,11 @@ public class Borrowing {
 
     @OneToMany
     @Cascade(CascadeType.ALL)
-    private  List<Avaliacao> listaAvaliacoes;
+    private  List<Avaliacao> listaAvaliacoes = new ArrayList<>();
+
+    public void addAvaliacoes(Avaliacao avaliacao){
+        this.listaAvaliacoes.add(avaliacao);
+    }
 
 
     @Override
