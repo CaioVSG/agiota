@@ -160,7 +160,7 @@ public class Facade {
 
     public Borrowing evaluateAgiotaBorrowing(Long id, Avaliacao avaliacao, String sessionId) { return borrowingService.evaluateAgiotaBorrowing(id,avaliacao, sessionId);}
 
-    public Payment payBorrowing(Long id, Long installid) { return borrowingService.pay(id, installid); }
+    public Payment payBorrowing(Long id, Long installid, String sessionId) { return borrowingService.pay(id, installid, sessionId); }
 
     public List<Installments> listInstallments(Long id) { return borrowingService.listInstallments(id); }
 

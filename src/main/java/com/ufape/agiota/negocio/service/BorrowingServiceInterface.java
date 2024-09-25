@@ -23,7 +23,7 @@ public interface BorrowingServiceInterface {
 
     List<Borrowing> findCustomerBorrowings(Long id);
 
-    Payment pay(Long id, Long installid);
+    Payment pay(Long id, Long installid, String sessionId);
 
     Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao, String SessionId);
 

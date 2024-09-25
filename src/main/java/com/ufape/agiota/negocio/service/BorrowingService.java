@@ -111,9 +111,12 @@ public class BorrowingService implements BorrowingServiceInterface{
         return borrowingRepository.findByCustomerId(id);
     }
 
-    public Payment pay(Long id, Long installid) {
+    public Payment pay(Long id, Long installid, String sessionId) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         Payment payment = new Payment();
+        if (!borrowing.getCustomer().getIdKc().equals(sessionId)){
+            throw new AccessDeniedException("Você não tem permissão para pagar este emprestimo");
+        }
         for (int i = 0; i < borrowing.getInstallmentsList().size(); i++) {
             if (Objects.equals(borrowing.getInstallmentsList().get(i).getId(), installid)) {
                   borrowing.getInstallmentsList().get(i).setStatus(true);

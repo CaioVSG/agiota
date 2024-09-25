@@ -88,7 +88,9 @@ public class BorrowingController {
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMINISTRADOR')")
     @PostMapping("/{id}/installments/{installid}/pay")
     public ResponseEntity<PaymentResponse> payBorrowing(@PathVariable Long id, @PathVariable Long installid){
-        return new ResponseEntity<>(new PaymentResponse(facade.payBorrowing(id, installid)), HttpStatus.OK);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new ResponseEntity<>(new PaymentResponse(facade.payBorrowing(id, installid, principal.getSubject())), HttpStatus.OK);
     }
 
 
