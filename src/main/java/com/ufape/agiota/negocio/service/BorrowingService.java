@@ -62,7 +62,7 @@ public class BorrowingService implements BorrowingServiceInterface{
     public Borrowing evaluateCustomerBorrowing(Long id, Avaliacao avaliacao, String sessionId) {
         Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprestimo não encontrado"));
         avaliacao.setAvaliado(Avaliado.CLIENTE);
-        if (!borrowing.getCustomer().getIdKc().equals(sessionId)){
+        if (!borrowing.getAgiota().getIdKc().equals(sessionId)){
             throw new AccessDeniedException("Você não tem permissão para avaliar este emprestimo");
         }
         for(Avaliacao temp: borrowing.getListaAvaliacoes()){
