@@ -31,4 +31,7 @@ public interface BorrowingServiceInterface {
 
     List<Installments> listInstallments(Long id);
 
+    Avaliacao avaliacaoByCustomerId (Long id);
+
+    Avaliacao avaliacaoByAgiotaId(Long id);
 }

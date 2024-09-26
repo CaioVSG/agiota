@@ -168,4 +168,6 @@ public class Facade {
         Customer customer = customerService.findByIdKc(idSession);
         return borrowingService.request(id, customer); }
 
+    public Avaliacao getReviewByAgiota(Long id){return borrowingService.avaliacaoByAgiotaId(id);}
+    public Avaliacao getReviewByCustomer(Long id){return borrowingService.avaliacaoByCustomerId(id);}
 }
