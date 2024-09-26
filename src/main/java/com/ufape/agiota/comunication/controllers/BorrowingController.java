@@ -1,6 +1,7 @@
 package com.ufape.agiota.comunication.controllers;
 
 import com.ufape.agiota.comunication.dto.Avaliacao.AvaliacaoRequest;
+import com.ufape.agiota.comunication.dto.Avaliacao.AvaliacaoResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingRequest;
 import com.ufape.agiota.comunication.dto.borrowing.SaveBorrowingResponse;
 import com.ufape.agiota.comunication.dto.borrowing.BorrowingResponse;
@@ -121,5 +122,15 @@ public class BorrowingController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt principal = (Jwt) authentication.getPrincipal();
         return new ResponseEntity<>( new BorrowingResponse(facade.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity(),principal.getSubject())),HttpStatus.OK);
+    }
+
+    @GetMapping("/review-agiota/{id}")
+    public ResponseEntity<AvaliacaoResponse> reviewAgiota(@PathVariable Long id){
+        return new ResponseEntity<>( new AvaliacaoResponse(facade.getReviewByAgiota(id)),HttpStatus.OK);
+    }
+
+    @GetMapping("/review-customer/{id}")
+    public ResponseEntity<AvaliacaoResponse> reviewCustomer(@PathVariable Long id){
+        return new ResponseEntity<>( new AvaliacaoResponse(facade.getReviewByCustomer(id)),HttpStatus.OK);
     }
 }
