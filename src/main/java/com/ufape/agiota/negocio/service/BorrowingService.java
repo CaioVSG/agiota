@@ -120,6 +120,10 @@ public class BorrowingService implements BorrowingServiceInterface{
         for (int i = 0; i < borrowing.getInstallmentsList().size(); i++) {
             if (Objects.equals(borrowing.getInstallmentsList().get(i).getId(), installid)) {
                   borrowing.getInstallmentsList().get(i).setStatus(true);
+                  boolean allPaid = borrowing.getInstallmentsList().stream().allMatch(Installments::getStatus);
+                  if (allPaid) {
+                      borrowing.setStatus(Status.CONCLUIDO);
+                  }
                   borrowingRepository.save(borrowing);
                   payment.setInstallments(borrowing.getInstallmentsList().get(i));
                   payment.setValue(borrowing.getInstallmentsList().get(i).getValue());
