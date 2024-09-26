@@ -100,7 +100,7 @@ public class BorrowingService implements BorrowingServiceInterface{
     public Avaliacao avaliacaoByCustomerId(Long id) {
         List<Borrowing> borrowings = borrowingRepository.findByCustomerId(id);
         int emprestimosAvaliados = 0;
-        int nota = 0;
+        double nota = 0;
         for(Borrowing borrowing: borrowings){
             for(Avaliacao avaliacao: borrowing.getListaAvaliacoes()){
                 if (avaliacao.getAvaliado() == Avaliado.CLIENTE){
@@ -120,7 +120,7 @@ public class BorrowingService implements BorrowingServiceInterface{
     public Avaliacao avaliacaoByAgiotaId(Long id) {
         List<Borrowing> borrowings = borrowingRepository.findByAgiotaId(id);
         int emprestimosAvaliados = 0;
-        int nota = 0;
+        double nota = 0;
         for(Borrowing borrowing: borrowings){
             for(Avaliacao avaliacao: borrowing.getListaAvaliacoes()){
                 if (avaliacao.getAvaliado() == Avaliado.AGIOTA){
@@ -131,7 +131,7 @@ public class BorrowingService implements BorrowingServiceInterface{
 
         }
         Avaliacao avaliacao = new Avaliacao();
-        avaliacao.setNota(nota / emprestimosAvaliados);
+        avaliacao.setNota((nota / emprestimosAvaliados));
         avaliacao.setAvaliado(Avaliado.CLIENTE);
         return avaliacao;
     }

@@ -18,7 +18,7 @@ import org.modelmapper.ModelMapper;
 public class AvaliacaoRequest {
     @Min(value = 0, message = "Informe uma nota entre 0 e 5")
     @Max(value = 5, message = "Informe uma nota entre 0 e 5")
-    private int nota;
+    private double nota;
 
     public Avaliacao convertToEntity(){
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
