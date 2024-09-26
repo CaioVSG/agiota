@@ -124,12 +124,12 @@ public class BorrowingController {
         return new ResponseEntity<>( new BorrowingResponse(facade.evaluateAgiotaBorrowing(id,avaliacao.convertToEntity(),principal.getSubject())),HttpStatus.OK);
     }
 
-    @PostMapping("/review-agiota/{id}")
+    @GetMapping("/review-agiota/{id}")
     public ResponseEntity<AvaliacaoResponse> reviewAgiota(@PathVariable Long id){
         return new ResponseEntity<>( new AvaliacaoResponse(facade.getReviewByAgiota(id)),HttpStatus.OK);
     }
 
-    @PostMapping("/review-customer/{id}")
+    @GetMapping("/review-customer/{id}")
     public ResponseEntity<AvaliacaoResponse> reviewCustomer(@PathVariable Long id){
         return new ResponseEntity<>( new AvaliacaoResponse(facade.getReviewByCustomer(id)),HttpStatus.OK);
     }
