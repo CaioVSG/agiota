@@ -4,6 +4,7 @@ import com.ufape.agiota.comunication.dto.agiota.AgiotaResponse;
 import com.ufape.agiota.comunication.dto.customer.CustomerResponse;
 import com.ufape.agiota.config.SpringApplicationContext;
 import com.ufape.agiota.negocio.enums.Status;
+import com.ufape.agiota.negocio.models.Avaliacao;
 import com.ufape.agiota.negocio.models.Borrowing;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class BorrowingResponse {
@@ -26,6 +28,7 @@ public class BorrowingResponse {
     private Status status;
     private AgiotaResponse agiota;
     private CustomerResponse customer;
+    List<Avaliacao> listaAvaliacoes;
 
     public BorrowingResponse(Borrowing obj) {
         if (obj == null) throw new IllegalArgumentException("Objeto não pode ser nulo");
